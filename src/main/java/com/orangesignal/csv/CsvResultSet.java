@@ -1760,6 +1760,20 @@ public class CsvResultSet implements ResultSet {
 		updateNClob(findColumn(columnLabel), reader);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * この実装は常に {@link SQLFeatureNotSupportedException} をスローします。
+	 */
+	@Override
+	public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+		throw new SQLFeatureNotSupportedException("getObject(int, Class) not supported");
+	}
+
+	@Override
+	public <T> T getObject(String columnLabel, Class<T> type) throws SQLException {
+		throw new SQLFeatureNotSupportedException("getObject(String, Class) not supported");
+	}
+
 	// ------------------------------------------------------------------------
 
 	/**
