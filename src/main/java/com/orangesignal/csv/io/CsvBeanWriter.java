@@ -72,7 +72,7 @@ public class CsvBeanWriter<T> implements Closeable, Flushable {
 	 * @throws IllegalArgumentException {@code writer} または {@code type} が {@code null} の場合。
 	 */
 	public static <T> CsvBeanWriter<T> newInstance(final CsvWriter writer, final Class<T> type) {
-		return new CsvBeanWriter<T>(writer, type);
+		return new CsvBeanWriter<>(writer, type);
 	}
 
 	/**
@@ -87,7 +87,7 @@ public class CsvBeanWriter<T> implements Closeable, Flushable {
 	 * @since 2.1
 	 */
 	public static <T> CsvBeanWriter<T> newInstance(final CsvWriter writer, final Class<T> type, final boolean header) {
-		return new CsvBeanWriter<T>(writer, type, header);
+		return new CsvBeanWriter<>(writer, type, header);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class CsvBeanWriter<T> implements Closeable, Flushable {
 	 * @throws IllegalArgumentException {@code writer} または {@code template} が {@code null} の場合。
 	 */
 	public static <T> CsvBeanWriter<T> newInstance(final CsvWriter writer, final CsvBeanTemplate<T> template) {
-		return new CsvBeanWriter<T>(writer, template);
+		return new CsvBeanWriter<>(writer, template);
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class CsvBeanWriter<T> implements Closeable, Flushable {
 	 * @since 2.1
 	 */
 	public static <T> CsvBeanWriter<T> newInstance(final CsvWriter writer, final CsvBeanTemplate<T> template, final boolean header) {
-		return new CsvBeanWriter<T>(writer, template, header);
+		return new CsvBeanWriter<>(writer, template, header);
 	}
 
 	// ------------------------------------------------------------------------
@@ -129,7 +129,7 @@ public class CsvBeanWriter<T> implements Closeable, Flushable {
 	 * @throws IllegalArgumentException {@code writer} または {@code type} が {@code null} の場合。
 	 */
 	public CsvBeanWriter(final CsvWriter writer, final Class<T> type) {
-		this(writer, new CsvBeanTemplate<T>(type), true);
+		this(writer, new CsvBeanTemplate<>(type), true);
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class CsvBeanWriter<T> implements Closeable, Flushable {
 	 * @since 2.1
 	 */
 	public CsvBeanWriter(final CsvWriter writer, final Class<T> type, final boolean header) {
-		this(writer, new CsvBeanTemplate<T>(type), header);
+		this(writer, new CsvBeanTemplate<>(type), header);
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class CsvBeanWriter<T> implements Closeable, Flushable {
 	private void ensureHeader() throws IOException {
 		synchronized (this) {
 			if (columnNames == null) {
-				final List<String> names = new ArrayList<String>();
+				final List<String> names = new ArrayList<>();
 				for (final Field f : template.getType().getDeclaredFields()) {
 					final String name = f.getName();
 					if (template.isTargetName(name)) {

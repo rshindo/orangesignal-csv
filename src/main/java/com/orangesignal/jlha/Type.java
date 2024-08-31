@@ -236,9 +236,9 @@ final class Type {
 			} else {
 				try {
 					if (Type.isLongString(str)) {
-						num = new Long(Long.parseLong(str));
+						num = Long.parseLong(str);
 					} else {
-						num = new Double(str);
+						num = Double.valueOf(str);
 					}
 				} catch (final NumberFormatException exception) {
 					num = Type.parseHexadecimal(str.substring(2));
@@ -246,31 +246,31 @@ final class Type {
 			}
 
 			if (type.equals(Byte.class) || type.equals(Byte.TYPE)) {
-				return new Byte(num.byteValue());
+				return num.byteValue();
 			} else if (type.equals(Short.class) || type.equals(Short.TYPE)) {
-				return new Short(num.shortValue());
+				return num.shortValue();
 			} else if (type.equals(Integer.class) || type.equals(Integer.TYPE)) {
-				return new Integer(num.intValue());
+				return num.intValue();
 			} else if (type.equals(Long.class) || type.equals(Long.TYPE)) {
-				return new Long(num.longValue());
+				return num.longValue();
 			} else if (type.equals(Float.class) || type.equals(Float.TYPE)) {
-				return new Float(num.floatValue());
+				return num.floatValue();
 			} else {
-				return new Double(num.doubleValue());
+				return num.doubleValue();
 			}
 		} else if (type.equals(Boolean.class) || type.equals(Boolean.TYPE)) {
 			if ("TRUE".equalsIgnoreCase(str)) {
-				return new Boolean(true);
+				return Boolean.TRUE;
 			} else if ("FALSE".equalsIgnoreCase(str)) {
-				return new Boolean(false);
+				return Boolean.FALSE;
 			}
 		} else if ((type.equals(Character.class) || type.equals(Character.TYPE))
 				&& obj != null) {
 			if (str.length() == 1) {
-				return new Character(str.charAt(0));
+				return str.charAt(0);
 			} else if (Type.isUnicodeEscape(str)) {
-				return new Character((char) Type.parseHexadecimal(
-						str.substring(2)).intValue());
+				return (char) Type.parseHexadecimal(
+						str.substring(2)).intValue();
 			}
 		}
 		throw new IllegalArgumentException();
@@ -300,7 +300,7 @@ final class Type {
 		try {
 			Long.parseLong(str);
 			return true;
-		} catch (final NumberFormatException exception) {
+		} catch (final NumberFormatException ignored) {
 		}
 
 		if (str.startsWith("0x") && Type.isHexadecimal(str.substring(2))) {

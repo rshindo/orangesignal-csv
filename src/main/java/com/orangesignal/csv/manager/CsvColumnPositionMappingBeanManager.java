@@ -61,12 +61,12 @@ public class CsvColumnPositionMappingBeanManager implements CsvManager {
 
 	@Override
 	public <T> CsvColumnPositionMappingBeanLoader<T> load(final Class<T> beanClass) {
-		return new CsvColumnPositionMappingBeanLoader<T>(csvConfig, beanClass);
+		return new CsvColumnPositionMappingBeanLoader<>(csvConfig, beanClass);
 	}
 
 	@Override
 	public <T> CsvColumnPositionMappingBeanSaver<T> save(final List<T> beans, final Class<T> beanClass) {
-		return new CsvColumnPositionMappingBeanSaver<T>(csvConfig, beans, beanClass);
+		return new CsvColumnPositionMappingBeanSaver<>(csvConfig, beans, beanClass);
 	}
 
 }

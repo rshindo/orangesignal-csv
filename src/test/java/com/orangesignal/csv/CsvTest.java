@@ -29,8 +29,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -77,10 +75,7 @@ public class CsvTest {
 		cfg.setSkipLines(1);
 		cfg.setUtf8bomPolicy(true);
 
-		final List<String[]> list = new ArrayList<String[]>(2);
-		list.add(new String[]{ "aaa", "b\nb\\\\b", "c\"cc" });
-		list.add(new String[]{ "zzz", "yyy", null });
-		data = Collections.unmodifiableList(list);
+		data = List.of(new String[] {"aaa", "b\nb\\\\b", "c\"cc"}, new String[] {"zzz", "yyy", null});
 	}
 
 	@Test
@@ -283,55 +278,43 @@ public class CsvTest {
 
 	@Test
 	public void testLoadZipFileStringCsvConfigCsvListHandlerOfTZipEntryFilter() throws IOException {
-		final ZipFile zip = new ZipFile(new File(path, "sample.zip"));
-		try {
+		try (ZipFile zip = new ZipFile(new File(path, "sample.zip"))) {
 			final List<Sample> list = Csv.load(zip, "utf-8", cfg,
-					new CsvEntityListHandler<Sample>(Sample.class)
-						.filter(new SimpleBeanFilter().in("label", "あ","い","う","か","き","く"))
-						.order(BeanOrder.asc("no"))
-						.offset(1)
-						.limit(3),
+					new CsvEntityListHandler<>(Sample.class)
+							.filter(new SimpleBeanFilter().in("label", "あ", "い", "う", "か", "き", "く"))
+							.order(BeanOrder.asc("no"))
+							.offset(1)
+							.limit(3),
 					new RegexEntryNameFilter("^.+\\.csv$")
-				);
+			);
 			assertThat(list.size(), is(3));
 			assertThat(list.get(0).label, is("き"));
 			assertThat(list.get(1).label, is("か"));
 			assertThat(list.get(2).label, is("う"));
-		} finally {
-			zip.close();
 		}
 	}
 
 	@Test
 	public void testLoadZipFileStringCsvConfigCsvListHandlerOfT() throws IOException {
-		final ZipFile zip = new ZipFile(new File(path, "n225.zip"));
-		try {
+		try (ZipFile zip = new ZipFile(new File(path, "n225.zip"))) {
 			final List<String[]> list = Csv.load(zip, encoding, cfg, new StringArrayListHandler());
 			assertThat(list.size(), is(2694));
-		} finally {
-			zip.close();
 		}
 	}
 
 	@Test
 	public void testLoadZipFileCsvConfigCsvListHandlerOfTZipEntryFilter() throws IOException {
-		final ZipFile zip = new ZipFile(new File(path, "n225.zip"));
-		try {
+		try (ZipFile zip = new ZipFile(new File(path, "n225.zip"))) {
 			final List<String[]> list = Csv.load(zip, cfg, new StringArrayListHandler(), new RegexEntryNameFilter("^.+\\.csv$"));
 			assertThat(list.size(), is(2694));
-		} finally {
-			zip.close();
 		}
 	}
 
 	@Test
 	public void testLoadZipFileCsvConfigCsvListHandlerOfT() throws IOException {
-		final ZipFile zip = new ZipFile(new File(path, "n225.zip"));
-		try {
+		try (ZipFile zip = new ZipFile(new File(path, "n225.zip"))) {
 			final List<String[]> list = Csv.load(zip, cfg, new StringArrayListHandler());
 			assertThat(list.size(), is(2694));
-		} finally {
-			zip.close();
 		}
 	}
 
@@ -448,12 +431,9 @@ public class CsvTest {
 		} finally {
 			Csv.closeQuietly(zip);
 		}
-		final ZipFile zipFile = new ZipFile(file);
-		try {
+		try (ZipFile zipFile = new ZipFile(file)) {
 			final List<String[]> list = Csv.load(zipFile, encoding, cfg, new StringArrayListHandler());
 			assertThat(list.size(), is(2));
-		} finally {
-			zipFile.close();
 		}
 	}
 
@@ -466,12 +446,9 @@ public class CsvTest {
 		} finally {
 			Csv.closeQuietly(zip);
 		}
-		final ZipFile zipFile = new ZipFile(file);
-		try {
+		try (ZipFile zipFile = new ZipFile(file)) {
 			final List<String[]> list = Csv.load(zipFile, cfg, new StringArrayListHandler());
 			assertThat(list.size(), is(2));
-		} finally {
-			zipFile.close();
 		}
 	}
 

@@ -88,10 +88,10 @@ public class CsvEntityListHandler<T> extends AbstractBeanListHandler<T, CsvEntit
 	@Override
 	public List<T> load(final CsvReader reader, final boolean ignoreScalar) throws IOException {
 		@SuppressWarnings("resource")
-		final CsvEntityReader<T> r = new CsvEntityReader<T>(reader, template);
+		final CsvEntityReader<T> r = new CsvEntityReader<>(reader, template);
 
 		// すべてのデータを読取って繰返し処理します。
-		final List<T> results = new ArrayList<T>();
+		final List<T> results = new ArrayList<>();
 		final boolean order = ignoreScalar || orders != null && !orders.isEmpty();
 		int offset = 0;
 
@@ -127,7 +127,7 @@ public class CsvEntityListHandler<T> extends AbstractBeanListHandler<T, CsvEntit
 		}
 
 		@SuppressWarnings("resource")
-		final CsvEntityWriter<T> w = new CsvEntityWriter<T>(writer, template, disableWriteHeader);
+		final CsvEntityWriter<T> w = new CsvEntityWriter<>(writer, template, disableWriteHeader);
 
 		// データ出力
 		for (final T entity : entities) {

@@ -37,7 +37,7 @@ public class CsvColumnPositionMappingBeanTemplate<T> extends AbstractCsvBeanTemp
 	/**
 	 * 項目位置と Java プログラム要素のフィールド名のマップを保持します。
 	 */
-	private SortedMap<Integer, String> columnMapping = new TreeMap<Integer, String>();
+	private SortedMap<Integer, String> columnMapping = new TreeMap<>();
 
 	/**
 	 * 区切り文字形式データフィルタを保持します。
@@ -55,7 +55,7 @@ public class CsvColumnPositionMappingBeanTemplate<T> extends AbstractCsvBeanTemp
 	 * @throws IllegalArgumentException {@code type} が {@code null} の場合。
 	 */
 	public static <T> CsvColumnPositionMappingBeanTemplate<T> newInstance(final Class<T> type) {
-		return new CsvColumnPositionMappingBeanTemplate<T>(type);
+		return new CsvColumnPositionMappingBeanTemplate<>(type);
 	}
 
 	// -----------------------------------------------------------------------
@@ -94,7 +94,7 @@ public class CsvColumnPositionMappingBeanTemplate<T> extends AbstractCsvBeanTemp
 		columnMapping.put(position, field);
 		if (format != null) {
 			setValueParser(field, format);
-			setValueFormatter(Integer.valueOf(position), format);
+			setValueFormatter(position, format);
 		}
 		return this;
 	}
@@ -104,7 +104,7 @@ public class CsvColumnPositionMappingBeanTemplate<T> extends AbstractCsvBeanTemp
 		if (columnMapping == null) {
 			throw new IllegalArgumentException("Column mapping must not be null");
 		}
-		this.columnMapping = new TreeMap<Integer, String>(columnMapping);
+		this.columnMapping = new TreeMap<>(columnMapping);
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class CsvColumnPositionMappingBeanTemplate<T> extends AbstractCsvBeanTemp
 	 * @return 項目名のリスト
 	 */
 	public List<String> createColumnNames() {
-		final List<String> columnNames = new ArrayList<String>(columnMapping.size());
+		final List<String> columnNames = new ArrayList<>(columnMapping.size());
 		for (final Map.Entry<Integer, String> e : columnMapping.entrySet()) {
 			columnNames.add(e.getValue());
 		}

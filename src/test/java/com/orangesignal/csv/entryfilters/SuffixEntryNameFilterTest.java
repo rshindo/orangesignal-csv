@@ -140,7 +140,7 @@ public class SuffixEntryNameFilterTest {
 		assertTrue(filter6.accept(new ZipEntry("foo/bar/Test.txt")));
 		assertFalse(filter6.accept(new ZipEntry("foo/bar/test/")));
 
-		final List<String> list = new ArrayList<String>();
+		final List<String> list = new ArrayList<>();
 		list.add("test.csv");
 		list.add("test.tsv");
 		list.add("test.txt");
@@ -260,7 +260,7 @@ public class SuffixEntryNameFilterTest {
 		assertTrue(filter6.accept(new LhaHeader("foo/bar/Test.txt")));
 		assertFalse(filter6.accept(new LhaHeader("foo/bar/test/")));
 
-		final List<String> list = new ArrayList<String>();
+		final List<String> list = new ArrayList<>();
 		list.add("test.csv");
 		list.add("test.tsv");
 		list.add("test.txt");

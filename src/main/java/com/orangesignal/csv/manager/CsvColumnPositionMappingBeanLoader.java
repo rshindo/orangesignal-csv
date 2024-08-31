@@ -39,7 +39,7 @@ public class CsvColumnPositionMappingBeanLoader<T> extends AbstractCsvLoader<T, 
 	 * @throws IllegalArgumentException パラメータが不正な場合
 	 */
 	protected CsvColumnPositionMappingBeanLoader(final CsvConfig cfg, final Class<T> beanClass) {
-		super(cfg, new ColumnPositionMappingBeanListHandler<T>(beanClass));
+		super(cfg, new ColumnPositionMappingBeanListHandler<>(beanClass));
 	}
 
 	/**

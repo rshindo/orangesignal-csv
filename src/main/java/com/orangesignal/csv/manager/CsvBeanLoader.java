@@ -39,7 +39,7 @@ public class CsvBeanLoader<T> extends AbstractCsvLoader<T, CsvBeanTemplate<T>, B
 	 * @throws IllegalArgumentException パラメータが不正な場合
 	 */
 	protected CsvBeanLoader(final CsvConfig cfg, final Class<T> beanClass) {
-		super(cfg, new BeanListHandler<T>(beanClass));
+		super(cfg, new BeanListHandler<>(beanClass));
 	}
 
 	@Override

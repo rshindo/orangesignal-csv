@@ -60,12 +60,12 @@ public class CsvBeanManager implements CsvManager {
 
 	@Override
 	public <T> CsvBeanLoader<T> load(final Class<T> beanClass) {
-		return new CsvBeanLoader<T>(csvConfig, beanClass);
+		return new CsvBeanLoader<>(csvConfig, beanClass);
 	}
 
 	@Override
 	public <T> CsvBeanSaver<T> save(final List<T> beans, final Class<T> beanClass) {
-		return new CsvBeanSaver<T>(csvConfig, beans, beanClass);
+		return new CsvBeanSaver<>(csvConfig, beans, beanClass);
 	}
 
 }

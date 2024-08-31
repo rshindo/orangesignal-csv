@@ -89,27 +89,26 @@ public class CsvColumnPositionMappingBeanManagerTest {
 
 	@Test
 	public void testLoad() throws Exception {
-		final Reader reader = new StringReader(
-				"GCQ09,COMEX 金 2009年08月限,1058.70,10,2008/08/06\r\n" +
-				"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
-				"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
-				"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n" +
-				"GCZ09,COMEX 金 2009年12月限,1098.70,13,2008/12/06\r\n"
-			);
 
-		try {
+		try (Reader reader = new StringReader(
+				"GCQ09,COMEX 金 2009年08月限,1058.70,10,2008/08/06\r\n" +
+						"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
+						"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
+						"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n" +
+						"GCZ09,COMEX 金 2009年12月限,1098.70,13,2008/12/06\r\n"
+		)) {
 			final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 			final List<SampleBean> list = new CsvColumnPositionMappingBeanManager(cfg)
-				.load(SampleBean.class)
-				.column(0, "symbol")
-				.column(1, "name")
-				.column(2, "price")
-				.column(3, "volume")
-				.column(4, "date", new SimpleDateFormat("yyyy/MM/dd"))
-				.filter(new SimpleCsvValueFilter().ne(0, "gcu09", true))
-				.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
-				.offset(1).limit(1)
-				.from(reader);
+					.load(SampleBean.class)
+					.column(0, "symbol")
+					.column(1, "name")
+					.column(2, "price")
+					.column(3, "volume")
+					.column(4, "date", new SimpleDateFormat("yyyy/MM/dd"))
+					.filter(new SimpleCsvValueFilter().ne(0, "gcu09", true))
+					.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
+					.offset(1).limit(1)
+					.from(reader);
 
 			assertThat(list.size(), is(1));
 			final SampleBean o1 = list.get(0);
@@ -118,8 +117,6 @@ public class CsvColumnPositionMappingBeanManagerTest {
 			assertThat(o1.price.doubleValue(), is(1078.70D));
 			assertThat(o1.volume.longValue(), is(11L));
 			assertThat(o1.date, is(df.parse("2008/10/06")));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -127,27 +124,24 @@ public class CsvColumnPositionMappingBeanManagerTest {
 	public void testSaveNoHeader() throws Exception {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("GCU09", "COMEX 金 2009年09月限", 1068.70, 10, df.parse("2008/09/06")));
 		list.add(new SampleBean("GCV09", "COMEX 金 2009年10月限", 1078.70, 11, df.parse("2008/10/06")));
 		list.add(new SampleBean("GCX09", "COMEX 金 2009年11月限", 1088.70, 12, df.parse("2008/11/06")));
 
-		final StringWriter sw = new StringWriter();
-		try {
+		try (StringWriter sw = new StringWriter()) {
 			new CsvColumnPositionMappingBeanManager(cfg)
-				.save(list, SampleBean.class)
-				.header(false)
-				.column("symbol")
-				.column("price", new DecimalFormat("0.00"))
-				.column("volume")
-				.column("date", new SimpleDateFormat("yyyy/MM/dd"))
-				.filter(new SimpleCsvValueFilter().ne(0, "gcu09", true))
-				.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
-				.to(sw);
+					.save(list, SampleBean.class)
+					.header(false)
+					.column("symbol")
+					.column("price", new DecimalFormat("0.00"))
+					.column("volume")
+					.column("date", new SimpleDateFormat("yyyy/MM/dd"))
+					.filter(new SimpleCsvValueFilter().ne(0, "gcu09", true))
+					.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
+					.to(sw);
 
 			assertThat(sw.getBuffer().toString(), is("GCV09,1078.70,11,2008/10/06\r\n"));
-		} finally {
-			sw.close();
 		}
 	}
 
@@ -155,26 +149,23 @@ public class CsvColumnPositionMappingBeanManagerTest {
 	public void testSave() throws Exception {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("GCU09", "COMEX 金 2009年09月限", 1068.70, 10, df.parse("2008/09/06")));
 		list.add(new SampleBean("GCV09", "COMEX 金 2009年10月限", 1078.70, 11, df.parse("2008/10/06")));
 		list.add(new SampleBean("GCX09", "COMEX 金 2009年11月限", 1088.70, 12, df.parse("2008/11/06")));
 
-		final StringWriter sw = new StringWriter();
-		try {
+		try (StringWriter sw = new StringWriter()) {
 			new CsvColumnPositionMappingBeanManager(cfg)
-				.save(list, SampleBean.class)
-				.column("symbol")
-				.column("price", new DecimalFormat("0.00"))
-				.column("volume")
-				.column("date", new SimpleDateFormat("yyyy/MM/dd"))
-				.filter(new SimpleCsvValueFilter().ne(0, "gcu09", true))
-				.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
-				.to(sw);
+					.save(list, SampleBean.class)
+					.column("symbol")
+					.column("price", new DecimalFormat("0.00"))
+					.column("volume")
+					.column("date", new SimpleDateFormat("yyyy/MM/dd"))
+					.filter(new SimpleCsvValueFilter().ne(0, "gcu09", true))
+					.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
+					.to(sw);
 
 			assertThat(sw.getBuffer().toString(), is("symbol,price,volume,date\r\nGCV09,1078.70,11,2008/10/06\r\n"));
-		} finally {
-			sw.close();
 		}
 	}
 

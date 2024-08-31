@@ -143,7 +143,7 @@ public class CsvColumnPositionMapReader implements Closeable {
 	}
 
 	private SortedMap<Integer, String> convert(final List<String> values) {
-		final SortedMap<Integer, String> map = new TreeMap<Integer, String>();
+		final SortedMap<Integer, String> map = new TreeMap<>();
 		final int len = values.size();
 		for (int pos = 0; pos < len; pos++) {
 			map.put(pos, values.get(pos));

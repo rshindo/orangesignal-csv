@@ -63,12 +63,12 @@ public class CsvEntityManager implements CsvManager {
 
 	@Override
 	public <T> CsvEntityLoader<T> load(final Class<T> entityClass) {
-		return new CsvEntityLoader<T>(csvConfig, entityClass);
+		return new CsvEntityLoader<>(csvConfig, entityClass);
 	}
 
 	@Override
 	public <T> CsvEntitySaver<T> save(final List<T> entities, final Class<T> entityClass) {
-		return new CsvEntitySaver<T>(csvConfig, entities, entityClass);
+		return new CsvEntitySaver<>(csvConfig, entities, entityClass);
 	}
 
 }

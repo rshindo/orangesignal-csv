@@ -71,9 +71,7 @@ public abstract class FieldUtils {
 		}
 		try {
 			field.set(bean, value);
-		} catch (final IllegalAccessException e) {
-			throw new IOException("Cannot set " + field.getName() + ": " + e.getMessage(), e);
-		} catch (final IllegalArgumentException e) {
+		} catch (final IllegalAccessException | IllegalArgumentException e) {
 			throw new IOException("Cannot set " + field.getName() + ": " + e.getMessage(), e);
 		}
 	}
@@ -95,9 +93,7 @@ public abstract class FieldUtils {
 		}
 		try {
 			return field.get(bean);
-		} catch (final IllegalAccessException e) {
-			throw new IOException("Cannot get " + field.getName() + ": " + e.getMessage(), e);
-		} catch (final IllegalArgumentException e) {
+		} catch (final IllegalAccessException | IllegalArgumentException e) {
 			throw new IOException("Cannot get " + field.getName() + ": " + e.getMessage(), e);
 		}
 	}

@@ -60,8 +60,7 @@ public class ColumnPositionMapListHandlerTest {
 	@Test
 	public void testLoad() throws IOException {
 		cfg.setSkipLines(1);	// ヘッダは不要なので読飛ばす指定をする
-		final CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
 			final List<Map<Integer, String>> list = new ColumnPositionMapListHandler().load(reader);
 			assertThat(list.size(), is(2));
 			final Map<Integer, String> m1 = list.get(0);
@@ -75,16 +74,13 @@ public class ColumnPositionMapListHandlerTest {
 			assertTrue(m2.containsKey(2));
 			assertNull(m2.get(2));
 			assertThat(m2.get(3), is("0"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoadOffsetLimit() throws IOException {
 		cfg.setSkipLines(1);	// ヘッダは不要なので読飛ばす指定をする
-		final CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
 			final List<Map<Integer, String>> list = new ColumnPositionMapListHandler().offset(1).limit(1).load(reader);
 			assertThat(list.size(), is(1));
 			final Map<Integer, String> m2 = list.get(0);
@@ -93,24 +89,22 @@ public class ColumnPositionMapListHandlerTest {
 			assertTrue(m2.containsKey(2));
 			assertNull(m2.get(2));
 			assertThat(m2.get(3), is("0"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoadFilter() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader(
+		//				"symbol,name,price,volume,date\r\n" +
+		try (CsvReader reader = new CsvReader(new StringReader(
 //				"symbol,name,price,volume,date\r\n" +
 				"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
-				"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
-				"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"
-			), cfg);
-		try {
+						"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
+						"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"
+		), cfg)) {
 			final List<Map<Integer, String>> list = new ColumnPositionMapListHandler()
-				.filter(new SimpleCsvValueFilter().ne(0, "gcu09", true))
-				.offset(1).limit(1)
-				.load(reader);
+					.filter(new SimpleCsvValueFilter().ne(0, "gcu09", true))
+					.offset(1).limit(1)
+					.load(reader);
 
 			assertThat(list.size(), is(1));
 			final Map<Integer, String> m2 = list.get(0);
@@ -119,27 +113,25 @@ public class ColumnPositionMapListHandlerTest {
 			assertThat(m2.get(2), is("1088.70"));
 			assertThat(m2.get(3), is("12"));
 			assertThat(m2.get(4), is("2008/11/06"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testSave() throws IOException {
-		final List<Map<Integer, String>> list = new ArrayList<Map<Integer, String>>(3);
-		final Map<Integer, String> m0 = new HashMap<Integer, String>(4);
+		final List<Map<Integer, String>> list = new ArrayList<>(3);
+		final Map<Integer, String> m0 = new HashMap<>(4);
 		m0.put(0, "symbol");
 		m0.put(1, "name");
 		m0.put(2, "price");
 		m0.put(3, "volume");
 		list.add(m0);
-		final Map<Integer, String> m1 = new HashMap<Integer, String>(4);
+		final Map<Integer, String> m1 = new HashMap<>(4);
 		m1.put(0, "AAAA");
 		m1.put(1, "aaa");
 		m1.put(2, "10000");
 		m1.put(3, "10");
 		list.add(m1);
-		final Map<Integer, String> m2 = new HashMap<Integer, String>(4);
+		final Map<Integer, String> m2 = new HashMap<>(4);
 		m2.put(0, "BBBB");
 		m2.put(1, "bbb");
 		m2.put(2, null);
@@ -147,33 +139,30 @@ public class ColumnPositionMapListHandlerTest {
 		list.add(m2);
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
 			new ColumnPositionMapListHandler().save(list, writer);
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0\r\n"));
 	}
 
 	@Test
 	public void testSaveFilter() throws Exception {
-		final List<Map<Integer, String>> list = new ArrayList<Map<Integer, String>>(3);
-		final Map<Integer, String> m0 = new HashMap<Integer, String>(5);
+		final List<Map<Integer, String>> list = new ArrayList<>(3);
+		final Map<Integer, String> m0 = new HashMap<>(5);
 		m0.put(0, "GCU09");
 		m0.put(1, "COMEX 金 2009年09月限");
 		m0.put(2, "1068.70");
 		m0.put(3, "10");
 		m0.put(4, "2008/09/06");
 		list.add(m0);
-		final Map<Integer, String> m1 = new HashMap<Integer, String>(5);
+		final Map<Integer, String> m1 = new HashMap<>(5);
 		m1.put(0, "GCV09");
 		m1.put(1, "COMEX 金 2009年10月限");
 		m1.put(2, "1078.70");
 		m1.put(3, "11");
 		m1.put(4, "2008/10/06");
 		list.add(m1);
-		final Map<Integer, String> m2 = new HashMap<Integer, String>(5);
+		final Map<Integer, String> m2 = new HashMap<>(5);
 		m2.put(0, "GCX09");
 		m2.put(1, "COMEX 金 2009年11月限");
 		m2.put(2, "1088.70");
@@ -182,13 +171,10 @@ public class ColumnPositionMapListHandlerTest {
 		list.add(m2);
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
 			new ColumnPositionMapListHandler()
-				.filter(new SimpleCsvValueFilter().ne(0, "gcu09", true))
-				.save(list, writer);
-		} finally {
-			writer.close();
+					.filter(new SimpleCsvValueFilter().ne(0, "gcu09", true))
+					.save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\nGCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"));
 	}

@@ -43,11 +43,7 @@ abstract class FormatUtils {
 		final Format result = (Format) format.clone();
 		try {
 			result.getClass().getMethod("applyPattern", String.class).invoke(result, buf.toString());
-		} catch (final NoSuchMethodException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		} catch (final IllegalAccessException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		} catch (final InvocationTargetException e) {
+		} catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
 			throw new IllegalStateException(e.getMessage(), e);
 		}
 		return result;
@@ -56,11 +52,7 @@ abstract class FormatUtils {
 	private static String getFormatPattern(final Format format) {
 		try {
 			return (String) format.getClass().getMethod("toPattern").invoke(format);
-		} catch (final NoSuchMethodException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		} catch (final IllegalAccessException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		} catch (final InvocationTargetException e) {
+		} catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
 			throw new IllegalStateException(e.getMessage(), e);
 		}
 	}

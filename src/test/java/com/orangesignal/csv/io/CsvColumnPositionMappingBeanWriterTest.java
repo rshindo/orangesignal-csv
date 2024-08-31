@@ -138,7 +138,7 @@ public class CsvColumnPositionMappingBeanWriterTest {
 		final CsvWriter w = new CsvWriter(new StringWriter(), cfg);
 		final Class<SampleBean> c = SampleBean.class;
 
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<SampleBean>(w, c);
+		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<>(w, c);
 		writer.close();
 	}
 
@@ -150,7 +150,7 @@ public class CsvColumnPositionMappingBeanWriterTest {
 		final CsvWriter w = null;
 		final Class<SampleBean> c = SampleBean.class;
 
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<SampleBean>(w, c);
+		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<>(w, c);
 		writer.close();
 	}
 
@@ -162,7 +162,7 @@ public class CsvColumnPositionMappingBeanWriterTest {
 		final CsvWriter w = new CsvWriter(new StringWriter(), cfg);
 		final Class<SampleBean> c = null;
 
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<SampleBean>(w, c);
+		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<>(w, c);
 		writer.close();
 	}
 
@@ -171,7 +171,7 @@ public class CsvColumnPositionMappingBeanWriterTest {
 		final CsvWriter w = new CsvWriter(new StringWriter(), cfg);
 		final CsvColumnPositionMappingBeanTemplate<SampleBean> template = CsvColumnPositionMappingBeanTemplate.newInstance(SampleBean.class);
 
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<SampleBean>(w, template);
+		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<>(w, template);
 		writer.close();
 	}
 
@@ -183,7 +183,7 @@ public class CsvColumnPositionMappingBeanWriterTest {
 		final CsvWriter w = null;
 		final CsvColumnPositionMappingBeanTemplate<SampleBean> template = CsvColumnPositionMappingBeanTemplate.newInstance(SampleBean.class);
 
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<SampleBean>(w, template);
+		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<>(w, template);
 		writer.close();
 	}
 
@@ -195,7 +195,7 @@ public class CsvColumnPositionMappingBeanWriterTest {
 		final CsvWriter w = new CsvWriter(new StringWriter(), cfg);
 		final CsvColumnPositionMappingBeanTemplate<SampleBean> template = null;
 
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<SampleBean>(w, template);
+		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = new CsvColumnPositionMappingBeanWriter<>(w, template);
 		writer.close();
 	}
 
@@ -205,11 +205,10 @@ public class CsvColumnPositionMappingBeanWriterTest {
 	@Test
 	public void testFlush() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
+		try (CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				SampleBean.class
-			);
-		try {
+		)) {
 			writer.writeHeader();
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\n"));
@@ -221,8 +220,6 @@ public class CsvColumnPositionMappingBeanWriterTest {
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
@@ -259,12 +256,11 @@ public class CsvColumnPositionMappingBeanWriterTest {
 	@Test
 	public void testWriteNoHeader() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
+		try (CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				SampleBean.class,
 				false
-			);
-		try {
+		)) {
 			writer.writeHeader();
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is(""));
@@ -284,8 +280,6 @@ public class CsvColumnPositionMappingBeanWriterTest {
 			writer.writeHeader();
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("AAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("AAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
@@ -293,11 +287,10 @@ public class CsvColumnPositionMappingBeanWriterTest {
 	@Test
 	public void testWriteHeader() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
+		try (CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				SampleBean.class
-			);
-		try {
+		)) {
 			writer.writeHeader();
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\n"));
@@ -317,8 +310,6 @@ public class CsvColumnPositionMappingBeanWriterTest {
 			writer.writeHeader();
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
@@ -326,15 +317,12 @@ public class CsvColumnPositionMappingBeanWriterTest {
 	@Test
 	public void testWrite1() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
+		try (CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				SampleBean.class
-			);
-		try {
+		)) {
 			writer.write(new SampleBean("AAAA", "aaa", 10000, 10, null));
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
@@ -342,19 +330,16 @@ public class CsvColumnPositionMappingBeanWriterTest {
 	@Test
 	public void testWrite2() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
+		try (CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				CsvColumnPositionMappingBeanTemplate.newInstance(SampleBean.class)
-					.column("name")
-					.column("symbol")
-					.column("price")
-					.column("volume")
-			);
-		try {
+						.column("name")
+						.column("symbol")
+						.column("price")
+						.column("volume")
+		)) {
 			writer.write(new SampleBean("AAAA", "aaa", 10000, 10, null));
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("name,symbol,price,volume\r\naaa,AAAA,10000,10\r\nbbb,BBBB,NULL,0\r\n"));
 	}
@@ -362,18 +347,15 @@ public class CsvColumnPositionMappingBeanWriterTest {
 	@Test
 	public void testWrite3() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
+		try (CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				CsvColumnPositionMappingBeanTemplate.newInstance(SampleBean.class)
-					.column("symbol")
-					.column("price")
-					.column("volume")
-			);
-		try {
+						.column("symbol")
+						.column("price")
+						.column("volume")
+		)) {
 			writer.write(new SampleBean("AAAA", "aaa", 10000, 10, null));
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,price,volume\r\nAAAA,10000,10\r\nBBBB,NULL,0\r\n"));
 	}
@@ -381,22 +363,19 @@ public class CsvColumnPositionMappingBeanWriterTest {
 	@Test
 	public void testWrite4() throws Exception {
 		final StringWriter sw = new StringWriter();
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
+		try (CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				CsvColumnPositionMappingBeanTemplate.newInstance(SampleBean.class)
-					.column("symbol")
-					.column("price", new DecimalFormat("#,##0"))
-					.column("volume")
-					.column("date", new SimpleDateFormat("yyyy/MM/dd"))
-					.column("date", new SimpleDateFormat("HH:mm:ss"))
-			);
-		try {
+						.column("symbol")
+						.column("price", new DecimalFormat("#,##0"))
+						.column("volume")
+						.column("date", new SimpleDateFormat("yyyy/MM/dd"))
+						.column("date", new SimpleDateFormat("HH:mm:ss"))
+		)) {
 			final DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			writer.write(new SampleBean("AAAA", "aaa", 10000, 10, df.parse("2008/10/28 10:24:00")));
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
 			writer.write(new SampleBean("CCCC", "ccc", 20000, 100, df.parse("2008/10/26 14:20:10")));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,price,volume,date,date\r\nAAAA,10\\,000,10,2008/10/28,10:24:00\r\nBBBB,NULL,0,NULL,NULL\r\nCCCC,20\\,000,100,2008/10/26,14:20:10\r\n"));
 	}
@@ -404,25 +383,22 @@ public class CsvColumnPositionMappingBeanWriterTest {
 	@Test
 	public void testFilter() throws Exception {
 		final StringWriter sw = new StringWriter();
-		final CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
+		try (CsvColumnPositionMappingBeanWriter<SampleBean> writer = CsvColumnPositionMappingBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				CsvColumnPositionMappingBeanTemplate.newInstance(SampleBean.class)
-					.column("symbol")
-					.column("price", new DecimalFormat("0.00"))
-					.column("volume")
-					.column("date", new SimpleDateFormat("yyyy/MM/dd"))
-					.filter(new SimpleCsvValueFilter()
-							.ne(0, "gcu09", true)
-							.ne(3, "2008/11/06")
+						.column("symbol")
+						.column("price", new DecimalFormat("0.00"))
+						.column("volume")
+						.column("date", new SimpleDateFormat("yyyy/MM/dd"))
+						.filter(new SimpleCsvValueFilter()
+								.ne(0, "gcu09", true)
+								.ne(3, "2008/11/06")
 						)
-			);
-		try {
+		)) {
 			final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 			writer.write(new SampleBean("GCU09", "COMEX 金 2009年09月限", 1068.70, 10, df.parse("2008/09/06")));
 			writer.write(new SampleBean("GCV09", "COMEX 金 2009年10月限", 1078.70, 11, df.parse("2008/10/06")));
 			writer.write(new SampleBean("GCX09", "COMEX 金 2009年11月限", 1088.70, 12, df.parse("2008/11/06")));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,price,volume,date\r\nGCV09,1078.70,11,2008/10/06\r\n"));
 	}

@@ -52,8 +52,7 @@ public class StringArrayListHandlerTest {
 		cfg.setIgnoreEmptyLines(true);
 		cfg.setIgnoreLinePatterns(Pattern.compile("^#.*$"));
 
-		final CsvReader reader = new CsvReader(new StringReader("# text/tab-separated-values   \r\n aaa , \"b\r\nb\\\\b\" , \"c\\\"cc\" \r\n zzz , yyy , NULL \r\n# Copyright 2009 OrangeSignal.   "), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("# text/tab-separated-values   \r\n aaa , \"b\r\nb\\\\b\" , \"c\\\"cc\" \r\n zzz , yyy , NULL \r\n# Copyright 2009 OrangeSignal.   "), cfg)) {
 			final List<String[]> list = new StringArrayListHandler().load(reader);
 			assertThat(list.size(), is(2));
 
@@ -68,8 +67,6 @@ public class StringArrayListHandlerTest {
 			assertThat(values2[0], is("zzz"));
 			assertThat(values2[1], is("yyy"));
 			assertNull(values2[2]);
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -83,14 +80,13 @@ public class StringArrayListHandlerTest {
 		cfg.setIgnoreEmptyLines(true);
 		cfg.setIgnoreLinePatterns(Pattern.compile("^#.*$"));
 
-		final CsvReader reader = new CsvReader(new StringReader("aaa,bbb,ccc \r\n ddd,eee,fff \r\n ggg,hhh,iii \r\n zzz,yyy,NULL"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("aaa,bbb,ccc \r\n ddd,eee,fff \r\n ggg,hhh,iii \r\n zzz,yyy,NULL"), cfg)) {
 			final List<String[]> list = new StringArrayListHandler()
-				.filter(new SimpleCsvValueFilter(new CsvValueOrExpression())
-						.eq(0, "ddd")
-						.eq(1, "yyy")
+					.filter(new SimpleCsvValueFilter(new CsvValueOrExpression())
+							.eq(0, "ddd")
+							.eq(1, "yyy")
 					)
-				.load(reader);
+					.load(reader);
 
 			assertThat(list.size(), is(2));
 
@@ -105,8 +101,6 @@ public class StringArrayListHandlerTest {
 			assertThat(values2[0], is("zzz"));
 			assertThat(values2[1], is("yyy"));
 			assertNull(values2[2]);
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -120,8 +114,7 @@ public class StringArrayListHandlerTest {
 		cfg.setIgnoreEmptyLines(true);
 		cfg.setIgnoreLinePatterns(Pattern.compile("^#.*$"));
 
-		final CsvReader reader = new CsvReader(new StringReader("# text/tab-separated-values   \r\n aaa , \"b\r\nb\\\\b\" , \"c\\\"cc\" \r\n zzz , yyy , NULL \r\n# Copyright 2009 OrangeSignal.   "), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("# text/tab-separated-values   \r\n aaa , \"b\r\nb\\\\b\" , \"c\\\"cc\" \r\n zzz , yyy , NULL \r\n# Copyright 2009 OrangeSignal.   "), cfg)) {
 			final List<String[]> list = new StringArrayListHandler().offset(1).limit(1).load(reader);
 			assertThat(list.size(), is(1));
 
@@ -130,8 +123,6 @@ public class StringArrayListHandlerTest {
 			assertThat(values2[0], is("zzz"));
 			assertThat(values2[1], is("yyy"));
 			assertNull(values2[2]);
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -145,13 +136,12 @@ public class StringArrayListHandlerTest {
 		cfg.setIgnoreEmptyLines(true);
 		cfg.setIgnoreLinePatterns(Pattern.compile("^#.*$"));
 
-		final CsvReader reader = new CsvReader(new StringReader("aaa,bbb,ccc \r\n ddd,eee,fff \r\n ggg,hhh,iii \r\n zzz,yyy,NULL"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("aaa,bbb,ccc \r\n ddd,eee,fff \r\n ggg,hhh,iii \r\n zzz,yyy,NULL"), cfg)) {
 			final List<String[]> list = new StringArrayListHandler()
-				.filter(new SimpleCsvValueFilter(new CsvValueOrExpression()).eq(0, "ddd").eq(1, "yyy"))
-				.offset(1)
-				.limit(1)
-				.load(reader);
+					.filter(new SimpleCsvValueFilter(new CsvValueOrExpression()).eq(0, "ddd").eq(1, "yyy"))
+					.offset(1)
+					.limit(1)
+					.load(reader);
 
 			assertThat(list.size(), is(1));
 
@@ -160,8 +150,6 @@ public class StringArrayListHandlerTest {
 			assertThat(values2[0], is("zzz"));
 			assertThat(values2[1], is("yyy"));
 			assertNull(values2[2]);
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -172,16 +160,13 @@ public class StringArrayListHandlerTest {
 		cfg.setLineSeparator("\r\n");
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			final List<String[]> list = new ArrayList<String[]>(2);
-			list.add(new String[]{ "aaa", "b\nb\\\\b", "c\"cc" });
-			list.add(new String[]{ "zzz", "yyy", null });
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			final List<String[]> list = new ArrayList<>(2);
+			list.add(new String[] {"aaa", "b\nb\\\\b", "c\"cc"});
+			list.add(new String[] {"zzz", "yyy", null});
 			new StringArrayListHandler().save(list, writer);
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("\"aaa\",\"b\nb\\\\b\",\"c\\\"cc\"\r\n\"zzz\",\"yyy\",NULL\r\n"));
-		} finally {
-			writer.close();
 		}
 	}
 
@@ -192,18 +177,15 @@ public class StringArrayListHandlerTest {
 		cfg.setLineSeparator("\r\n");
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			final List<String[]> list = new ArrayList<String[]>(2);
-			list.add(new String[]{ "aaa", "b\nb\\\\b", "c\"cc" });
-			list.add(new String[]{ "zzz", "yyy", null });
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			final List<String[]> list = new ArrayList<>(2);
+			list.add(new String[] {"aaa", "b\nb\\\\b", "c\"cc"});
+			list.add(new String[] {"zzz", "yyy", null});
 			new StringArrayListHandler()
-				.filter(new SimpleCsvValueFilter().ne(0, "aaa"))
-				.save(list, writer);
+					.filter(new SimpleCsvValueFilter().ne(0, "aaa"))
+					.save(list, writer);
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("\"zzz\",\"yyy\",NULL\r\n"));
-		} finally {
-			writer.close();
 		}
 	}
 

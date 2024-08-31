@@ -18,6 +18,7 @@ package com.orangesignal.csv.bean;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.text.Format;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -43,12 +44,12 @@ public abstract class AbstractCsvBeanTemplate<T, O extends AbstractCsvBeanTempla
 	/**
 	 * Java プログラム要素のフィールド名と項目値を解析するオブジェクトのマップを保持します。
 	 */
-	private Map<String, Format> valueParserMapping = new HashMap<String, Format>();
+	private Map<String, Format> valueParserMapping = new HashMap<>();
 
 	/**
 	 * 項目名 (または項目位置) と項目値へ書式化するオブジェクトのマップを保持します。
 	 */
-	private Map<Object, Format> valueFormatterMapping = new HashMap<Object, Format>();
+	private Map<Object, Format> valueFormatterMapping = new HashMap<>();
 
 	/**
 	 * 区切り文字形式データの項目値コンバータを保持します。
@@ -214,10 +215,9 @@ public abstract class AbstractCsvBeanTemplate<T, O extends AbstractCsvBeanTempla
 	 */
 	public T createBean() throws IOException {
 		try {
-			return type.newInstance();
-		} catch (final IllegalAccessException e) {
-			throw new IOException("Cannot create " + type.getName() + ": " + e.getMessage(), e);
-		} catch (final InstantiationException e) {
+			return type.getDeclaredConstructor().newInstance();
+		} catch (final IllegalAccessException | InstantiationException | NoSuchMethodException |
+					   InvocationTargetException e) {
 			throw new IOException("Cannot create " + type.getName() + ": " + e.getMessage(), e);
 		}
 	}
@@ -230,10 +230,10 @@ public abstract class AbstractCsvBeanTemplate<T, O extends AbstractCsvBeanTempla
 	 * @return Java プログラム要素のフィールド名と項目名群のマップ
 	 */
 	public Map<String, Object[]> createFieldAndColumnsMap(final Map<?, String> map) {
-		final Map<String, Object[]> results = new HashMap<String, Object[]>();
+		final Map<String, Object[]> results = new HashMap<>();
 		for (final Field f : type.getDeclaredFields()) {
 			final String fieldName = f.getName();
-			final List<Object> list = new ArrayList<Object>();
+			final List<Object> list = new ArrayList<>();
 			for (final Map.Entry<?, String> e : map.entrySet()) {
 				if (fieldName.equals(e.getValue())) {
 					list.add(e.getKey());

@@ -39,7 +39,7 @@ public class CsvColumnNameMappingBeanLoader<T> extends AbstractCsvLoader<T, CsvC
 	 * @throws IllegalArgumentException パラメータが不正な場合
 	 */
 	protected CsvColumnNameMappingBeanLoader(final CsvConfig cfg, final Class<T> beanClass) {
-		super(cfg, new ColumnNameMappingBeanListHandler<T>(beanClass));
+		super(cfg, new ColumnNameMappingBeanListHandler<>(beanClass));
 	}
 
 	/**

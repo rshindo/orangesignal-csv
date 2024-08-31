@@ -140,7 +140,7 @@ public class CsvBeanWriterTest {
 		final CsvWriter w = new CsvWriter(new StringWriter(), cfg);
 		final Class<SampleBean> c = SampleBean.class;
 
-		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<SampleBean>(w, c);
+		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<>(w, c);
 		writer.close();
 	}
 
@@ -152,7 +152,7 @@ public class CsvBeanWriterTest {
 		final CsvWriter w = null;
 		final Class<SampleBean> c = SampleBean.class;
 
-		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<SampleBean>(w, c);
+		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<>(w, c);
 		writer.close();
 	}
 
@@ -164,7 +164,7 @@ public class CsvBeanWriterTest {
 		final CsvWriter w = new CsvWriter(new StringWriter(), cfg);
 		final Class<SampleBean> c = null;
 
-		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<SampleBean>(w, c);
+		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<>(w, c);
 		writer.close();
 	}
 
@@ -173,7 +173,7 @@ public class CsvBeanWriterTest {
 		final CsvWriter w = new CsvWriter(new StringWriter(), cfg);
 		final CsvBeanTemplate<SampleBean> template = CsvBeanTemplate.newInstance(SampleBean.class);
 
-		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<SampleBean>(w, template);
+		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<>(w, template);
 		writer.close();
 	}
 
@@ -185,7 +185,7 @@ public class CsvBeanWriterTest {
 		final CsvWriter w = null;
 		final CsvBeanTemplate<SampleBean> template = CsvBeanTemplate.newInstance(SampleBean.class);
 
-		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<SampleBean>(w, template);
+		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<>(w, template);
 		writer.close();
 	}
 
@@ -197,7 +197,7 @@ public class CsvBeanWriterTest {
 		final CsvWriter w = new CsvWriter(new StringWriter(), cfg);
 		final CsvBeanTemplate<SampleBean> template = null;
 
-		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<SampleBean>(w, template);
+		final CsvBeanWriter<SampleBean> writer = new CsvBeanWriter<>(w, template);
 		writer.close();
 	}
 
@@ -207,8 +207,7 @@ public class CsvBeanWriterTest {
 	@Test
 	public void testFlush() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(new CsvWriter(sw, cfg), SampleBean.class);
-		try {
+		try (CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(new CsvWriter(sw, cfg), SampleBean.class)) {
 			writer.writeHeader();
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\n"));
@@ -220,8 +219,6 @@ public class CsvBeanWriterTest {
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
@@ -258,12 +255,11 @@ public class CsvBeanWriterTest {
 	@Test
 	public void testWriteNoHeader() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
+		try (CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				SampleBean.class,
 				false
-			);
-		try {
+		)) {
 			writer.writeHeader();
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is(""));
@@ -279,8 +275,6 @@ public class CsvBeanWriterTest {
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("AAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("AAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
@@ -288,11 +282,10 @@ public class CsvBeanWriterTest {
 	@Test
 	public void testWriteHeader() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
+		try (CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				SampleBean.class
-			);
-		try {
+		)) {
 			writer.writeHeader();
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\n"));
@@ -308,8 +301,6 @@ public class CsvBeanWriterTest {
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
@@ -317,15 +308,12 @@ public class CsvBeanWriterTest {
 	@Test
 	public void testWrite1() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
+		try (CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				SampleBean.class
-			);
-		try {
+		)) {
 			writer.write(new SampleBean("AAAA", "aaa", 10000, 10, null));
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
@@ -333,37 +321,31 @@ public class CsvBeanWriterTest {
 	@Test
 	public void testWrite2() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
+		try (CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				CsvBeanTemplate.newInstance(SampleBean.class)
-					.includes("name")
-			);
-		try {
+						.includes("name")
+		)) {
 			writer.write(new SampleBean("AAAA", "aaa", 10000, 10, null));
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("name\r\naaa\r\nbbb\r\n"));
 	}
 
 	@Test
 	public void testWrite3() throws IOException {
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, null));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 
 		final StringWriter sw = new StringWriter();
-		final CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
+		try (CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				CsvBeanTemplate.newInstance(SampleBean.class)
-					.excludes("name", "date")
-			);
-		try {
+						.excludes("name", "date")
+		)) {
 			writer.write(new SampleBean("AAAA", "aaa", 10000, 10, null));
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,price,volume\r\nAAAA,10000,10\r\nBBBB,NULL,0\r\n"));
 	}
@@ -372,19 +354,16 @@ public class CsvBeanWriterTest {
 	public void testWrite4() throws Exception {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 		final StringWriter sw = new StringWriter();
-		final CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
+		try (CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				CsvBeanTemplate.newInstance(SampleBean.class)
-					.excludes("name")
-					.format("price", new DecimalFormat("#,##0"))
-					.format("date", new SimpleDateFormat("yyyy/MM/dd"))
-			);
-		try {
+						.excludes("name")
+						.format("price", new DecimalFormat("#,##0"))
+						.format("date", new SimpleDateFormat("yyyy/MM/dd"))
+		)) {
 			writer.write(new SampleBean("AAAA", "aaa", 10000, 10, df.parse("2008/10/28")));
 			writer.write(new SampleBean("BBBB", "bbb", null, 0, null));
 			writer.write(new SampleBean("CCCC", "ccc", 20000, 100, df.parse("2008/10/26")));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,price,volume,date\r\nAAAA,10\\,000,10,2008/10/28\r\nBBBB,NULL,0,NULL\r\nCCCC,20\\,000,100,2008/10/26\r\n"));
 	}
@@ -392,24 +371,21 @@ public class CsvBeanWriterTest {
 	@Test
 	public void testFilter() throws Exception {
 		final StringWriter sw = new StringWriter();
-		final CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
+		try (CsvBeanWriter<SampleBean> writer = CsvBeanWriter.newInstance(
 				new CsvWriter(sw, cfg),
 				CsvBeanTemplate.newInstance(SampleBean.class)
-					.excludes("name")
-					.format("price", new DecimalFormat("0.00"))
-					.format("date", new SimpleDateFormat("yyyy/MM/dd"))
-					.filter(new SimpleCsvNamedValueFilter()
-							.ne("symbol", "gcu09", true)
-							.ne("date", "2008/11/06")
+						.excludes("name")
+						.format("price", new DecimalFormat("0.00"))
+						.format("date", new SimpleDateFormat("yyyy/MM/dd"))
+						.filter(new SimpleCsvNamedValueFilter()
+								.ne("symbol", "gcu09", true)
+								.ne("date", "2008/11/06")
 						)
-			);
-		try {
+		)) {
 			final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 			writer.write(new SampleBean("GCU09", "COMEX 金 2009年09月限", 1068.70, 10, df.parse("2008/09/06")));
 			writer.write(new SampleBean("GCV09", "COMEX 金 2009年10月限", 1078.70, 11, df.parse("2008/10/06")));
 			writer.write(new SampleBean("GCX09", "COMEX 金 2009年11月限", 1088.70, 12, df.parse("2008/11/06")));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,price,volume,date\r\nGCV09,1078.70,11,2008/10/06\r\n"));
 	}

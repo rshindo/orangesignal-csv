@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -146,8 +147,7 @@ public final class CsvReaderTest {
 		cfg.setIgnoreEmptyLines(true);
 		cfg.setIgnoreLinePatterns(Pattern.compile("^#.*$"));
 
-		final CsvReader reader = new CsvReader(new StringReader("# text/tab-separated-values   \r\n aaa , \"b\r\nb\\\\b\" , \"c\\\"cc\" \r\n zzz , yyy , NULL \r\n# Copyright 2009 OrangeSignal.   "), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("# text/tab-separated-values   \r\n aaa , \"b\r\nb\\\\b\" , \"c\\\"cc\" \r\n zzz , yyy , NULL \r\n# Copyright 2009 OrangeSignal.   "), cfg)) {
 			final List<CsvToken> tokens1 = reader.readTokens();
 			assertThat(reader.getLineNumber(), is(2));
 			assertThat(reader.getStartLineNumber(), is(2));
@@ -189,8 +189,6 @@ public final class CsvReaderTest {
 			assertThat(reader.getStartLineNumber(), is(5));
 			assertThat(reader.getEndLineNumber(), is(5));
 			assertThat(tokens3, nullValue());
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -199,8 +197,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig();
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvReader reader = new CsvReader(new StringReader("aaa\r\n\r\nccc"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("aaa\r\n\r\nccc"), cfg)) {
 			final List<CsvToken> tokens1 = reader.readTokens();
 			assertThat(tokens1.size(), is(1));
 			assertThat(tokens1.get(0).getValue(), is("aaa"));
@@ -216,8 +213,6 @@ public final class CsvReaderTest {
 			final List<CsvToken> tokens4 = reader.readTokens();
 			assertNull(tokens4);
 			assertThat(reader.isEndOfFile(), is(true));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -226,8 +221,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig();
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvReader reader = new CsvReader(new StringReader("1,aaa\r\n\r\n3,ccc"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("1,aaa\r\n\r\n3,ccc"), cfg)) {
 			final List<CsvToken> tokens1 = reader.readTokens();
 			assertThat(tokens1.size(), is(2));
 			assertThat(tokens1.get(0).getValue(), is("1"));
@@ -245,8 +239,6 @@ public final class CsvReaderTest {
 			final List<CsvToken> tokens4 = reader.readTokens();
 			assertNull(tokens4);
 			assertThat(reader.isEndOfFile(), is(true));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -255,8 +247,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig();
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvReader reader = new CsvReader(new StringReader("aaa\r\n\r\nccc\r\n"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("aaa\r\n\r\nccc\r\n"), cfg)) {
 			final List<CsvToken> tokens1 = reader.readTokens();
 			assertThat(tokens1.size(), is(1));
 			assertThat(tokens1.get(0).getValue(), is("aaa"));
@@ -272,8 +263,6 @@ public final class CsvReaderTest {
 			final List<CsvToken> tokens4 = reader.readTokens();
 			assertNull(tokens4);
 			assertThat(reader.isEndOfFile(), is(true));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -282,8 +271,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig();
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvReader reader = new CsvReader(new StringReader("aaa\r\n\r\nccc\r\n"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("aaa\r\n\r\nccc\r\n"), cfg)) {
 			final List<String> values1 = reader.readValues();
 			assertThat(values1.size(), is(1));
 			assertThat(values1.get(0), is("aaa"));
@@ -299,8 +287,6 @@ public final class CsvReaderTest {
 			final List<String> values4 = reader.readValues();
 			assertNull(values4);
 			assertThat(reader.isEndOfFile(), is(true));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -314,8 +300,7 @@ public final class CsvReaderTest {
 		cfg.setIgnoreEmptyLines(true);
 		cfg.setIgnoreLinePatterns(Pattern.compile("^#.*$"));
 
-		final CsvReader reader = new CsvReader(new StringReader("# text/tab-separated-values   \r\n aaa , \"b\r\nb\\\\b\" , \"c\\\"cc\",   , \r\n zzz , yyy , NULL \r\n# Copyright 2009 OrangeSignal.   "), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("# text/tab-separated-values   \r\n aaa , \"b\r\nb\\\\b\" , \"c\\\"cc\",   , \r\n zzz , yyy , NULL \r\n# Copyright 2009 OrangeSignal.   "), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(5));
 			assertThat(line1.get(0), is("aaa"));
@@ -332,8 +317,6 @@ public final class CsvReaderTest {
 
 			final List<String> line3 = reader.readValues();
 			assertThat(line3, nullValue());
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -344,8 +327,7 @@ public final class CsvReaderTest {
 		cfg.setNullString("NULL");
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvReader reader = new CsvReader(new StringReader("aaa,b\\,b\\,b,c\\,cc\r\nz\\,zz,yyy,NULL\r\n"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("aaa,b\\,b\\,b,c\\,cc\r\nz\\,zz,yyy,NULL\r\n"), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0), is("aaa"));
@@ -360,8 +342,6 @@ public final class CsvReaderTest {
 
 			final List<String> line3 = reader.readValues();
 			assertThat(line3, nullValue());
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -375,8 +355,7 @@ public final class CsvReaderTest {
 		cfg.setIgnoreEmptyLines(true);
 		cfg.setIgnoreLinePatterns(Pattern.compile("^#.*$"));
 
-		final CsvReader reader = new CsvReader(new StringReader("# text/tab-separated-values   \r\n aaa \t \"b\r\nb\\\\b\" \t \"c\\\"cc\" \r\n zzz \t yyy \t NULL \r\n# Copyright 2009 OrangeSignal.   "), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("# text/tab-separated-values   \r\n aaa \t \"b\r\nb\\\\b\" \t \"c\\\"cc\" \r\n zzz \t yyy \t NULL \r\n# Copyright 2009 OrangeSignal.   "), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0), is("aaa"));
@@ -391,8 +370,6 @@ public final class CsvReaderTest {
 
 			final List<String> line3 = reader.readValues();
 			assertThat(line3, nullValue());
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -401,8 +378,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig(',', '"', '"');
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvReader reader = new CsvReader(new StringReader("aaa,bbb,ccc\r\nzzz,yyy,xxx\r\n"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("aaa,bbb,ccc\r\nzzz,yyy,xxx\r\n"), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0), is("aaa"));
@@ -417,8 +393,6 @@ public final class CsvReaderTest {
 
 			final List<String> line3 = reader.readValues();
 			assertThat(line3, nullValue());
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -427,8 +401,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig(',', '"', '"');
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvReader reader = new CsvReader(new StringReader("aaa,bbb,ccc\r\nzzz,yyy,xxx"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("aaa,bbb,ccc\r\nzzz,yyy,xxx"), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0), is("aaa"));
@@ -443,8 +416,6 @@ public final class CsvReaderTest {
 
 			final List<String> line3 = reader.readValues();
 			assertThat(line3, nullValue());
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -453,8 +424,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig(',', '"', '"');
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvReader reader = new CsvReader(new StringReader("field_name,field_name,field_name\r\naaa,bbb,ccc\r\nzzz,yyy,xxx\r\n"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("field_name,field_name,field_name\r\naaa,bbb,ccc\r\nzzz,yyy,xxx\r\n"), cfg)) {
 			final List<String> line0 = reader.readValues();
 			assertThat(line0.size(), is(3));
 			assertThat(line0.get(0), is("field_name"));
@@ -475,8 +445,6 @@ public final class CsvReaderTest {
 
 			final List<String> line3 = reader.readValues();
 			assertThat(line3, nullValue());
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -485,8 +453,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig(',', '"', '"');
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvReader reader = new CsvReader(new StringReader("\"aaa\",\"bbb\",\"ccc\"\r\nzzz,yyy,xxx"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("\"aaa\",\"bbb\",\"ccc\"\r\nzzz,yyy,xxx"), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0), is("aaa"));
@@ -501,8 +468,6 @@ public final class CsvReaderTest {
 
 			final List<String> line3 = reader.readValues();
 			assertThat(line3, nullValue());
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -511,8 +476,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig(',', '"', '"');
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvReader reader = new CsvReader(new StringReader("\"aaa\",\"b\r\nbb\",\"ccc\"\r\nzzz,yyy,xxx"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("\"aaa\",\"b\r\nbb\",\"ccc\"\r\nzzz,yyy,xxx"), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0), is("aaa"));
@@ -527,8 +491,6 @@ public final class CsvReaderTest {
 
 			final List<String> line3 = reader.readValues();
 			assertThat(line3, nullValue());
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -537,8 +499,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig(',', '"', '"');
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvReader reader = new CsvReader(new StringReader("\"aaa\",\"b\"\"bb\",\"ccc\""), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("\"aaa\",\"b\"\"bb\",\"ccc\""), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0), is("aaa"));
@@ -547,8 +508,6 @@ public final class CsvReaderTest {
 
 			final List<String> line2 = reader.readValues();
 			assertThat(line2, nullValue());
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -556,8 +515,7 @@ public final class CsvReaderTest {
 	public void testReadEscapedDoubleQuoteWithLineBreak() throws IOException {
 		final CsvConfig cfg = new CsvConfig(',', '"', '"');
 		cfg.setIgnoreEmptyLines(true);
-		final CsvReader reader = new CsvReader(new StringReader("\"a\",\"b\",\"c\"\r\n\"1,000\",\"2,000\",\"3,000\"\r\n\"a\",\"\"\"b\"\"b\r\nb\",\"c\"\r\n"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("\"a\",\"b\",\"c\"\r\n\"1,000\",\"2,000\",\"3,000\"\r\n\"a\",\"\"\"b\"\"b\r\nb\",\"c\"\r\n"), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0), is("a"));
@@ -575,8 +533,6 @@ public final class CsvReaderTest {
 			assertThat(line3.get(0), is("a"));
 			assertThat(line3.get(1), is("\"b\"b\r\nb"));
 			assertThat(line3.get(2), is("c"));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -584,8 +540,7 @@ public final class CsvReaderTest {
 	public void testReadEscapedDoubleQuoteWithLineBreak2() throws IOException {
 		final CsvConfig cfg = new CsvConfig(',', '"', '"');
 		cfg.setIgnoreEmptyLines(true);
-		final CsvReader reader = new CsvReader(new StringReader("\"a\",\"b\",\"c\"\r\n\"1,000\",\"2,000\",\"3,000\"\r\n\"a\",\"\"\"b\"\"b\"\"\r\nb\",\"c\"\r\n"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("\"a\",\"b\",\"c\"\r\n\"1,000\",\"2,000\",\"3,000\"\r\n\"a\",\"\"\"b\"\"b\"\"\r\nb\",\"c\"\r\n"), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0), is("a"));
@@ -603,8 +558,6 @@ public final class CsvReaderTest {
 			assertThat(line3.get(0), is("a"));
 			assertThat(line3.get(1), is("\"b\"b\"\r\nb"));
 			assertThat(line3.get(2), is("c"));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -612,33 +565,27 @@ public final class CsvReaderTest {
 	public void testReadEscapedDoubleQuote() throws IOException {
 		final CsvConfig cfg = new CsvConfig(',', '"', '"');
 		cfg.setIgnoreEmptyLines(true);
-		final CsvReader reader = new CsvReader(new StringReader("\"\"\"\"\"x\"\"\"\"\",\"y\"\"y\"\"y\",\"z\"\"\"\"z\""), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("\"\"\"\"\"x\"\"\"\"\",\"y\"\"y\"\"y\",\"z\"\"\"\"z\""), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0), is("\"\"x\"\""));
 			assertThat(line1.get(1), is("y\"y\"y"));
 			assertThat(line1.get(2), is("z\"\"z"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testReadUtf8bomFromInputStreamReader() throws IOException {
-		final byte[] bytes = "\uFEFF佐藤,鈴木".getBytes("UTF8");
+		final byte[] bytes = "\uFEFF佐藤,鈴木".getBytes(StandardCharsets.UTF_8);
 //		System.out.println(new HexDumpEncoder().encodeBuffer(bytes));
 
 		final CsvConfig cfg = new CsvConfig();
 		cfg.setIgnoreEmptyLines(true);
-		final CsvReader reader = new CsvReader(new InputStreamReader(new ByteArrayInputStream(bytes), "UTF8"));
-		try {
+		try (CsvReader reader = new CsvReader(new InputStreamReader(new ByteArrayInputStream(bytes), StandardCharsets.UTF_8))) {
 			final List<String> line = reader.readValues();
 			assertThat(line.size(), is(2));
 			assertThat(line.get(0), is("佐藤"));
 			assertThat(line.get(1), is("鈴木"));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -663,14 +610,11 @@ public final class CsvReaderTest {
 	public void testReadUtf8bomFromFileInputStream() throws IOException {
 		final CsvConfig cfg = new CsvConfig();
 		cfg.setIgnoreEmptyLines(true);
-		final CsvReader reader = new CsvReader(new InputStreamReader(new FileInputStream("src/test/resources/utf8bom.csv"), "UTF-8"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new InputStreamReader(new FileInputStream("src/test/resources/utf8bom.csv"), StandardCharsets.UTF_8), cfg)) {
 			final List<String> line = reader.readValues();
 			assertThat(line.size(), is(2));
 			assertThat(line.get(0), is("佐藤"));
 			assertThat(line.get(1), is("鈴木"));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -679,8 +623,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig();
 		cfg.setVariableColumns(false);
 
-		final CsvReader reader = new CsvReader(new StringReader("a,b,c\r\nx,y"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("a,b,c\r\nx,y"), cfg)) {
 			final List<CsvToken> line1 = reader.readTokens();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0).getValue(), is("a"));
@@ -696,8 +639,6 @@ public final class CsvReaderTest {
 			assertThat(tokens.size(), is(2));
 			assertThat(tokens.get(0).getValue(), is("x"));
 			assertThat(tokens.get(1).getValue(), is("y"));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -706,8 +647,7 @@ public final class CsvReaderTest {
 		final CsvConfig cfg = new CsvConfig();
 		cfg.setVariableColumns(false);
 
-		final CsvReader reader = new CsvReader(new StringReader("a,b,c\r\nx,y"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("a,b,c\r\nx,y"), cfg)) {
 			final List<String> line1 = reader.readValues();
 			assertThat(line1.size(), is(3));
 			assertThat(line1.get(0), is("a"));
@@ -723,8 +663,6 @@ public final class CsvReaderTest {
 			assertThat(tokens.size(), is(2));
 			assertThat(tokens.get(0).getValue(), is("x"));
 			assertThat(tokens.get(1).getValue(), is("y"));
-		} finally {
-			reader.close();
 		}
 	}
 

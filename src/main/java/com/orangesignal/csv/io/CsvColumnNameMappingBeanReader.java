@@ -66,7 +66,7 @@ public class CsvColumnNameMappingBeanReader<T> implements Closeable {
 	 * @throws IllegalArgumentException {@code reader} または {@code type} が {@code null} の場合。
 	 */
 	public static <T> CsvColumnNameMappingBeanReader<T> newInstance(final CsvReader reader, final Class<T> type) {
-		return new CsvColumnNameMappingBeanReader<T>(reader, type);
+		return new CsvColumnNameMappingBeanReader<>(reader, type);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class CsvColumnNameMappingBeanReader<T> implements Closeable {
 	 * @throws IllegalArgumentException {@code reader} または {@code template} が {@code null} の場合。
 	 */
 	public static <T> CsvColumnNameMappingBeanReader<T> newInstance(final CsvReader reader, final CsvColumnNameMappingBeanTemplate<T> template) {
-		return new CsvColumnNameMappingBeanReader<T>(reader, template);
+		return new CsvColumnNameMappingBeanReader<>(reader, template);
 	}
 
 	// ------------------------------------------------------------------------
@@ -93,7 +93,7 @@ public class CsvColumnNameMappingBeanReader<T> implements Closeable {
 	 * @throws IllegalArgumentException {@code reader} または {@code type} が {@code null} の場合。
 	 */
 	public CsvColumnNameMappingBeanReader(final CsvReader reader, final Class<T> type) {
-		this(reader, new CsvColumnNameMappingBeanTemplate<T>(type));
+		this(reader, new CsvColumnNameMappingBeanTemplate<>(type));
 	}
 
 	/**

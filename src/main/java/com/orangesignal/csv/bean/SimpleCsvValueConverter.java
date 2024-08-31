@@ -40,18 +40,18 @@ public class SimpleCsvValueConverter implements CsvValueConverter {
 	private static final Map<String, Boolean> BOOLEAN_DEFAULTS;
 
 	static {
-		final Map<Class<?>, Object> primitiveMap = new HashMap<Class<?>, Object>();
+		final Map<Class<?>, Object> primitiveMap = new HashMap<>();
 		primitiveMap.put(Boolean.TYPE, Boolean.FALSE);
-		primitiveMap.put(Byte.TYPE, Byte.valueOf((byte) 0));
-		primitiveMap.put(Character.TYPE, Character.valueOf('\u0000'));
-		primitiveMap.put(Short.TYPE, Short.valueOf((short) 0));
-		primitiveMap.put(Integer.TYPE, Integer.valueOf(0));
-		primitiveMap.put(Long.TYPE, Long.valueOf(0L));
-		primitiveMap.put(Float.TYPE, Float.valueOf(0F));
-		primitiveMap.put(Double.TYPE, Double.valueOf(0D));
+		primitiveMap.put(Byte.TYPE, (byte) 0);
+		primitiveMap.put(Character.TYPE, '\u0000');
+		primitiveMap.put(Short.TYPE, (short) 0);
+		primitiveMap.put(Integer.TYPE, 0);
+		primitiveMap.put(Long.TYPE, 0L);
+		primitiveMap.put(Float.TYPE, 0F);
+		primitiveMap.put(Double.TYPE, 0D);
 		PRIMITIVE_DEFAULTS = Collections.unmodifiableMap(primitiveMap);
 
-		final Map<String, Boolean> booleanMap = new HashMap<String, Boolean>();
+		final Map<String, Boolean> booleanMap = new HashMap<>();
 		putBooleanMap(booleanMap, "0", "1");
 		putBooleanMap(booleanMap, "false", "true");
 		putBooleanMap(booleanMap, "f", "t");
@@ -143,11 +143,7 @@ public class SimpleCsvValueConverter implements CsvValueConverter {
 		} else if (Enum.class.isAssignableFrom(type)) {
 			try {
 				return type.getMethod("valueOf", String.class).invoke(null, str);
-			} catch (final NoSuchMethodException e) {
-				throw new IllegalArgumentException(String.format("Unknown convert type %s", type.getName()), e);
-			} catch (final IllegalAccessException e) {
-				throw new IllegalArgumentException(String.format("Unknown convert type %s", type.getName()), e);
-			} catch (final InvocationTargetException e) {
+			} catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
 				throw new IllegalArgumentException(String.format("Unknown convert type %s", type.getName()), e);
 			}
 		}

@@ -309,7 +309,7 @@ public class CsvReader implements Closeable {
 		if (tokens == null) {
 			return null;
 		}
-		final List<String> results = new ArrayList<String>(tokens.size());
+		final List<String> results = new ArrayList<>(tokens.size());
 		for (final CsvToken token : tokens) {
 			results.add(token.getValue());
 		}
@@ -352,7 +352,7 @@ public class CsvReader implements Closeable {
 	 * @throws IOException 入出力エラーが発生した場合
 	 */
 	private List<CsvToken> readCsvTokens() throws IOException {
-		final List<CsvToken> results = new ArrayList<CsvToken>(arraySize);
+		final List<CsvToken> results = new ArrayList<>(arraySize);
 		endTokenLineNumber++;
 		startLineNumber = endTokenLineNumber;
 		endOfLine = false;

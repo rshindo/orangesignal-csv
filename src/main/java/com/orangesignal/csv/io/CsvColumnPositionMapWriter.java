@@ -139,9 +139,9 @@ public class CsvColumnPositionMapWriter implements Closeable, Flushable {
 		if (map instanceof SortedMap) {
 			sortedMap = (SortedMap<Integer, String>) map;
 		} else {
-			sortedMap = new TreeMap<Integer, String>(map);
+			sortedMap = new TreeMap<>(map);
 		}
-		return Math.max(sortedMap.lastKey().intValue(), 0);
+		return Math.max(sortedMap.lastKey(), 0);
 	}
 
 	// ------------------------------------------------------------------------

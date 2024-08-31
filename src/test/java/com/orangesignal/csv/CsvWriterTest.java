@@ -129,16 +129,13 @@ public class CsvWriterTest {
 		cfg.setLineSeparator("\r\n");
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
 			// Act
-			writer.writeValues(Arrays.asList(new String[]{ "aaa", "b\nb\\\\b", "c\"cc" }));
-			writer.writeValues(Arrays.asList(new String[]{ "zzz", "yyy", null }));
+			writer.writeValues(Arrays.asList(new String[] {"aaa", "b\nb\\\\b", "c\"cc"}));
+			writer.writeValues(Arrays.asList(new String[] {"zzz", "yyy", null}));
 			writer.flush();
 			// Assert
 			assertThat(sw.getBuffer().toString(), is("\"aaa\",\"b\nb\\\\b\",\"c\\\"cc\"\r\n\"zzz\",\"yyy\",NULL\r\n"));
-		} finally {
-			writer.close();
 		}
 	}
 
@@ -150,16 +147,13 @@ public class CsvWriterTest {
 		cfg.setLineSeparator("\r\n");
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
 			// Act
-			writer.writeValues(Arrays.asList(new String[]{ "aaa", "b\nb\\\\b", "c\"cc" }));
-			writer.writeValues(Arrays.asList(new String[]{ "zzz", "yyy", null }));
+			writer.writeValues(Arrays.asList(new String[] {"aaa", "b\nb\\\\b", "c\"cc"}));
+			writer.writeValues(Arrays.asList(new String[] {"zzz", "yyy", null}));
 			writer.flush();
 			// Assert
 			assertThat(sw.getBuffer().toString(), is("aaa,\"b\nb\\\\b\",\"c\\\"cc\"\r\nzzz,yyy,NULL\r\n"));
-		} finally {
-			writer.close();
 		}
 	}
 
@@ -171,16 +165,13 @@ public class CsvWriterTest {
 		cfg.setLineSeparator("\r\n");
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
 			// Act
-			writer.writeValues(Arrays.asList(new String[]{ "aaa", "b,bb", "ccc" }));
-			writer.writeValues(Arrays.asList(new String[]{ "zzz", "yyy", null }));
+			writer.writeValues(Arrays.asList(new String[] {"aaa", "b,bb", "ccc"}));
+			writer.writeValues(Arrays.asList(new String[] {"zzz", "yyy", null}));
 			writer.flush();
 			// Assert
 			assertThat(sw.getBuffer().toString(), is("aaa,b\\,bb,ccc\r\nzzz,yyy,NULL\r\n"));
-		} finally {
-			writer.close();
 		}
 	}
 
@@ -210,11 +201,10 @@ public class CsvWriterTest {
 		final CsvConfig cfg = new CsvConfig();
 		cfg.setVariableColumns(false);
 
-		final CsvWriter writer = new CsvWriter(new StringWriter(), cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(new StringWriter(), cfg)) {
 			// Act
-			writer.writeValues(Arrays.asList(new String[]{ "a", "bb", "c" }));
-			writer.writeValues(Arrays.asList(new String[]{ "x", "y" }));
+			writer.writeValues(Arrays.asList(new String[] {"a", "bb", "c"}));
+			writer.writeValues(Arrays.asList(new String[] {"x", "y"}));
 			writer.flush();
 		} catch (final CsvValueException e) {
 			// Assert
@@ -223,8 +213,6 @@ public class CsvWriterTest {
 			assertThat(tokens.size(), is(2));
 			assertThat(tokens.get(0), is("x"));
 			assertThat(tokens.get(1), is("y"));
-		} finally {
-			writer.close();
 		}
 	}
 

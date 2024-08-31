@@ -452,9 +452,9 @@ public class PostLh5Encoder implements PostLzssEncoder {
 		for (final int[] element : pattern) {
 			int length = 0;
 
-			for (int j = 0; j < element.length; j++) {
-				if (0 <= groupHuffLen[element[j]]) {
-					length += groupHuffLen[element[j]];
+			for (int i : element) {
+				if (0 <= groupHuffLen[i]) {
+					length += groupHuffLen[i];
 				} else {
 					length = Integer.MAX_VALUE;
 					break;
@@ -573,15 +573,15 @@ public class PostLh5Encoder implements PostLzssEncoder {
 
 			// ------------------------------------------------------------------
 			// 次のブロックのための処理
-			for (int i = 0; i < group.length; i++) {
-				this.blockSize[group[i]] = 0;
+			for (int k : group) {
+				this.blockSize[k] = 0;
 
-				codeFreq = blockCodeFreq[group[i]];
+				codeFreq = blockCodeFreq[k];
 				for (int j = 0; j < codeFreq.length; j++) {
 					codeFreq[j] = 0;
 				}
 
-				offLenFreq = blockOffLenFreq[group[i]];
+				offLenFreq = blockOffLenFreq[k];
 				for (int j = 0; j < offLenFreq.length; j++) {
 					offLenFreq[j] = 0;
 				}

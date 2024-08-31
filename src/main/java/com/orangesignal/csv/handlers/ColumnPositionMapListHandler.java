@@ -64,7 +64,7 @@ public class ColumnPositionMapListHandler extends AbstractCsvListHandler<Map<Int
 		r.setFilter(valueFilter);
 
 		// データ部を処理します。
-		final List<Map<Integer, String>> results = new ArrayList<Map<Integer, String>>();
+		final List<Map<Integer, String>> results = new ArrayList<>();
 		int offset = 0;
 
 		List<String> values;

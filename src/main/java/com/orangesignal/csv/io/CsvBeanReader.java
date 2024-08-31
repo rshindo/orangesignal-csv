@@ -63,7 +63,7 @@ public class CsvBeanReader<T> implements Closeable {
 	 * @throws IllegalArgumentException {@code reader} または {@code type} が {@code null} の場合。
 	 */
 	public static <T> CsvBeanReader<T> newInstance(final CsvReader reader, final Class<T> type) {
-		return new CsvBeanReader<T>(reader, type);
+		return new CsvBeanReader<>(reader, type);
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class CsvBeanReader<T> implements Closeable {
 	 * @throws IllegalArgumentException {@code reader} または {@code template} が {@code null} の場合。
 	 */
 	public static <T> CsvBeanReader<T> newInstance(final CsvReader reader, final CsvBeanTemplate<T> template) {
-		return new CsvBeanReader<T>(reader, template);
+		return new CsvBeanReader<>(reader, template);
 	}
 
 	// ------------------------------------------------------------------------
@@ -90,7 +90,7 @@ public class CsvBeanReader<T> implements Closeable {
 	 * @throws IllegalArgumentException {@code reader} または {@code type} が {@code null} の場合。
 	 */
 	public CsvBeanReader(final CsvReader reader, final Class<T> type) {
-		this(reader, new CsvBeanTemplate<T>(type));
+		this(reader, new CsvBeanTemplate<>(type));
 	}
 
 	/**

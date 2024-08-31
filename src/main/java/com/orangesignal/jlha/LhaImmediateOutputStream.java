@@ -364,7 +364,7 @@ public class LhaImmediateOutputStream extends OutputStream {
 		archive.write(0);                                                // throws IOException
 		try {
 			archive.setLength(archive.getFilePointer());            // After Java1.2 throws IOException
-		} catch (final NoSuchMethodError error) {
+		} catch (final NoSuchMethodError ignored) {
 		}
 		archive.close();                                                   // throws IOException
 		archive = null;

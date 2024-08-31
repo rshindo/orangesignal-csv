@@ -80,7 +80,7 @@ public class CsvEntityWriter<T> implements Closeable, Flushable {
 	 * @throws IllegalArgumentException {@code writer} または {@code entityClass} が {@code null} の場合。
 	 */
 	public static <T> CsvEntityWriter<T> newInstance(final CsvWriter writer, final Class<T> entityClass) {
-		return new CsvEntityWriter<T>(writer, entityClass);
+		return new CsvEntityWriter<>(writer, entityClass);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class CsvEntityWriter<T> implements Closeable, Flushable {
 	 * @since 2.2
 	 */
 	public static <T> CsvEntityWriter<T> newInstance(final CsvWriter writer, final Class<T> entityClass, final boolean disableWriteHeader) {
-		return new CsvEntityWriter<T>(writer, entityClass, disableWriteHeader);
+		return new CsvEntityWriter<>(writer, entityClass, disableWriteHeader);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class CsvEntityWriter<T> implements Closeable, Flushable {
 	 * @throws IllegalArgumentException {@code writer} または {@code template} が {@code null} の場合。
 	 */
 	public static <T> CsvEntityWriter<T> newInstance(final CsvWriter writer, final CsvEntityTemplate<T> template) {
-		return new CsvEntityWriter<T>(writer, template);
+		return new CsvEntityWriter<>(writer, template);
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class CsvEntityWriter<T> implements Closeable, Flushable {
 	 * @since 2.2
 	 */
 	public static <T> CsvEntityWriter<T> newInstance(final CsvWriter writer, final CsvEntityTemplate<T> template, final boolean disableWriteHeader) {
-		return new CsvEntityWriter<T>(writer, template, disableWriteHeader);
+		return new CsvEntityWriter<>(writer, template, disableWriteHeader);
 	}
 
 	// ------------------------------------------------------------------------
@@ -137,7 +137,7 @@ public class CsvEntityWriter<T> implements Closeable, Flushable {
 	 * @throws IllegalArgumentException {@code writer} または {@code entityClass} が {@code null} の場合。
 	 */
 	public CsvEntityWriter(final CsvWriter writer, final Class<T> entityClass) {
-		this(writer, new CsvEntityTemplate<T>(entityClass), false);
+		this(writer, new CsvEntityTemplate<>(entityClass), false);
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class CsvEntityWriter<T> implements Closeable, Flushable {
 	 * @since 2.2
 	 */
 	public CsvEntityWriter(final CsvWriter writer, final Class<T> entityClass, final boolean disableWriteHeader) {
-		this(writer, new CsvEntityTemplate<T>(entityClass), disableWriteHeader);
+		this(writer, new CsvEntityTemplate<>(entityClass), disableWriteHeader);
 	}
 
 	/**

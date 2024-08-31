@@ -265,7 +265,7 @@ final class CompressMethod {
 			packages = LhaProperty.getProperty("lha.packages");
 		}
 
-		final Hashtable<String, Object> substitute = new Hashtable<String, Object>();
+		final Hashtable<String, Object> substitute = new Hashtable<>();
 		substitute.put("out", out);
 
 		return (OutputStream) LhaProperty.parse(generator, substitute, packages);
@@ -292,9 +292,9 @@ final class CompressMethod {
 			packages = LhaProperty.getProperty("lha.packages");
 		}
 
-		final Hashtable<String, Object> substitute = new Hashtable<String, Object>();
+		final Hashtable<String, Object> substitute = new Hashtable<>();
 		substitute.put("in", in);
-		substitute.put("length", new Long(length));
+		substitute.put("length", length);
 
 		return (InputStream) LhaProperty.parse(generator, substitute, packages);
 	}

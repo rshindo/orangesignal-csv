@@ -143,7 +143,7 @@ public class CsvConfig implements Serializable, Cloneable {
 	/**
 	 * データ出力時の改行文字列を保持します。
 	 */
-	private String lineSeparator = System.getProperty("line.separator");
+	private String lineSeparator = System.lineSeparator();
 
 	// ------------------------------------------------------------------------
 	// コンストラクタ

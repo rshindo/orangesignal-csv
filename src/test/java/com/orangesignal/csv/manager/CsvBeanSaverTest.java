@@ -36,7 +36,7 @@ public class CsvBeanSaverTest {
 	public void testCsvBeanSaverIllegalArgumentException() {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectMessage("CsvConfig must not be null");
-		new CsvBeanSaver<Price>(null, null, Price.class);
+		new CsvBeanSaver<>(null, null, Price.class);
 	}
 
 }
