@@ -134,7 +134,7 @@ public class CsvColumnNameMapWriter implements Closeable, Flushable {
 
 	private void ensureHeader(final Map<String, String> map) throws IOException {
 		if (columnNames == null && map != null) {
-			columnNames = new ArrayList<String>(map.keySet());
+			columnNames = new ArrayList<>(map.keySet());
 		}
 		if (columnNames == null) {
 			// ヘッダがない場合は例外をスローします。

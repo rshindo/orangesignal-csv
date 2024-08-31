@@ -106,10 +106,10 @@ public class BeanListHandler<T> extends AbstractBeanListHandler<T, CsvBeanTempla
 	@Override
 	public List<T> load(final CsvReader reader, final boolean ignoreScalar) throws IOException {
 		@SuppressWarnings("resource")
-		final CsvBeanReader<T> r = new CsvBeanReader<T>(reader, template);
+		final CsvBeanReader<T> r = new CsvBeanReader<>(reader, template);
 
 		// データ部を処理します。
-		final List<T> results = new ArrayList<T>();
+		final List<T> results = new ArrayList<>();
 		final boolean order = ignoreScalar || orders != null && !orders.isEmpty();
 		int offset = 0;
 
@@ -141,7 +141,7 @@ public class BeanListHandler<T> extends AbstractBeanListHandler<T, CsvBeanTempla
 	@Override
 	public void save(final List<T> list, final CsvWriter writer) throws IOException {
 		@SuppressWarnings("resource")
-		final CsvBeanWriter<T> w = new CsvBeanWriter<T>(writer, template, header);
+		final CsvBeanWriter<T> w = new CsvBeanWriter<>(writer, template, header);
 
 		// データ部を処理します。
 		for (final T bean : list) {

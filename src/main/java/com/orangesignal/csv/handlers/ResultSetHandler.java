@@ -70,7 +70,7 @@ public class ResultSetHandler implements CsvHandler<ResultSet> {
 		try {
 			final int count = writeHeader(rs.getMetaData(), writer);
 			while (rs.next()) {
-				final List<String> list = new ArrayList<String>(count);
+				final List<String> list = new ArrayList<>(count);
 				for (int i = 1; i <= count; i++) {
 					final Object o = rs.getObject(i);
 					if (rs.wasNull()) {
@@ -89,7 +89,7 @@ public class ResultSetHandler implements CsvHandler<ResultSet> {
 	private int writeHeader(final ResultSetMetaData meta, final CsvWriter writer) throws IOException {
 		try {
 			final int count = meta.getColumnCount();
-			final List<String> list = new ArrayList<String>(count);
+			final List<String> list = new ArrayList<>(count);
 			for (int i = 1; i <= count; i++) {
 				list.add(meta.getColumnLabel(i));
 			}

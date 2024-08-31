@@ -36,7 +36,7 @@ public class BeanOrderComparatorTest {
 
 	@Test
 	public void testBeanOrderComparator() {
-		new BeanOrderComparator(new ArrayList<BeanOrder>(0));
+		new BeanOrderComparator(new ArrayList<>(0));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -57,7 +57,7 @@ public class BeanOrderComparatorTest {
 		p2.setDate(now);
 		p2.setPrice(200);
 
-		final List<BeanOrder> orders = new ArrayList<BeanOrder>();
+		final List<BeanOrder> orders = new ArrayList<>();
 		orders.add(BeanOrder.asc("date"));
 		assertThat(new BeanOrderComparator(orders).compare(p1, p2), is(0));
 		orders.add(BeanOrder.asc("price"));
@@ -66,17 +66,17 @@ public class BeanOrderComparatorTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCompareIllegalArgumentException1() {
-		new BeanOrderComparator(new ArrayList<BeanOrder>(0)).compare(null, new Object());
+		new BeanOrderComparator(new ArrayList<>(0)).compare(null, new Object());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCompareIllegalArgumentException2() {
-		new BeanOrderComparator(new ArrayList<BeanOrder>(0)).compare(new Object(), null);
+		new BeanOrderComparator(new ArrayList<>(0)).compare(new Object(), null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCompareIllegalArgumentException3() {
-		new BeanOrderComparator(new ArrayList<BeanOrder>(0)).compare(null, null);
+		new BeanOrderComparator(new ArrayList<>(0)).compare(null, null);
 	}
 
 	@Test
@@ -92,11 +92,11 @@ public class BeanOrderComparatorTest {
 		p2.setDate(now);
 		p2.setPrice(200);
 
-		final List<SamplePrice> beans = new ArrayList<SamplePrice>(2);
+		final List<SamplePrice> beans = new ArrayList<>(2);
 		beans.add(p1);
 		beans.add(p2);
 
-		final List<BeanOrder> orders = new ArrayList<BeanOrder>();
+		final List<BeanOrder> orders = new ArrayList<>();
 		orders.add(BeanOrder.asc("date"));
 		orders.add(BeanOrder.asc("name"));
 

@@ -93,25 +93,24 @@ public class CsvEntityManagerTest {
 
 	@Test
 	public void testLoad() throws Exception {
-		final Reader reader = new StringReader(
-				"シンボル,名称,価格,出来高,日付,時刻\r\n" +
-				"GCQ09,COMEX 金 2009年08月限,1\\,058.70,10,2008/08/06,12:00:00\r\n" +
-				"GCU09,COMEX 金 2009年09月限,1\\,068.70,10,2008/09/06,12:00:00\r\n" +
-				"GCV09,COMEX 金 2009年10月限,1\\,078.70,11,2008/10/06,12:00:00\r\n" +
-				"GCX09,COMEX 金 2009年11月限,1\\,088.70,12,2008/11/06,12:00:00\r\n" +
-				"GCZ09,COMEX 金 2009年12月限,1\\,098.70,13,2008/12/06,12:00:00\r\n"
-			);
 
-		try {
+		try (Reader reader = new StringReader(
+				"シンボル,名称,価格,出来高,日付,時刻\r\n" +
+						"GCQ09,COMEX 金 2009年08月限,1\\,058.70,10,2008/08/06,12:00:00\r\n" +
+						"GCU09,COMEX 金 2009年09月限,1\\,068.70,10,2008/09/06,12:00:00\r\n" +
+						"GCV09,COMEX 金 2009年10月限,1\\,078.70,11,2008/10/06,12:00:00\r\n" +
+						"GCX09,COMEX 金 2009年11月限,1\\,088.70,12,2008/11/06,12:00:00\r\n" +
+						"GCZ09,COMEX 金 2009年12月限,1\\,098.70,13,2008/12/06,12:00:00\r\n"
+		)) {
 			final DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			df.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
 
 			final List<Price> list = new CsvEntityManager(cfg)
-				.load(Price.class)
-				.filter(new SimpleCsvNamedValueFilter().ne("シンボル", "gcu09", true))
-				.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06 12:00:00")))
-				.offset(1).limit(1)
-				.from(reader);
+					.load(Price.class)
+					.filter(new SimpleCsvNamedValueFilter().ne("シンボル", "gcu09", true))
+					.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06 12:00:00")))
+					.offset(1).limit(1)
+					.from(reader);
 
 			assertThat(list.size(), is(1));
 			final Price o1 = list.get(0);
@@ -120,8 +119,6 @@ public class CsvEntityManagerTest {
 			assertThat(o1.price.doubleValue(), is(1078.70D));
 			assertThat(o1.volume.longValue(), is(11L));
 			assertThat(o1.date, is(df.parse("2008/10/06 12:00:00")));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -130,28 +127,25 @@ public class CsvEntityManagerTest {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
 
-		final List<Price> list = new ArrayList<Price>();
+		final List<Price> list = new ArrayList<>();
 		list.add(new Price("GCU09", "COMEX 金 2009年09月限", 1068, 10, df.parse("2008/09/06 12:00:00")));
 		list.add(new Price("GCV09", "COMEX 金 2009年10月限", 1078, 11, df.parse("2008/10/06 12:00:00")));
 		list.add(new Price("GCX09", "COMEX 金 2009年11月限", 1088, 12, df.parse("2008/11/06 12:00:00")));
 
-		final StringWriter sw = new StringWriter();
-		try {
+		try (StringWriter sw = new StringWriter()) {
 			new CsvEntityManager(cfg)
-				.save(list, Price.class)
-				.filter(new SimpleCsvNamedValueFilter().ne("シンボル", "gcu09", true))
-				.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06 12:00:00")))
-				.to(sw);
+					.save(list, Price.class)
+					.filter(new SimpleCsvNamedValueFilter().ne("シンボル", "gcu09", true))
+					.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06 12:00:00")))
+					.to(sw);
 
 			assertThat(sw.getBuffer().toString(), is("シンボル,名称,価格,出来高,日付,時刻\r\nGCV09,COMEX 金 2009年10月限,1\\,078,11,2008/10/06,12:00:00\r\n"));
-		} finally {
-			sw.close();
 		}
 	}
 
 	@Test
 	public void testStringArraySave() throws Exception {
-		final List<StringArrayEntity> list = new ArrayList<StringArrayEntity>();
+		final List<StringArrayEntity> list = new ArrayList<>();
 
 		final StringArrayEntity o1 = new StringArrayEntity();
 		o1.array = new String[]{ "あ", null, "う" };
@@ -173,19 +167,15 @@ public class CsvEntityManagerTest {
 		o4.str = "null";
 		list.add(o4);
 
-		final StringWriter sw = new StringWriter();
-		try {
+		try (StringWriter sw = new StringWriter()) {
 			new CsvEntityManager(cfg).save(list, StringArrayEntity.class).to(sw);
 			assertThat(sw.getBuffer().toString(), is("あ,NULL,う,えお\r\nア,イ,ウ,エオ\r\nNULL,NULL,NULL,NULL\r\nNULL,NULL,NULL,null\r\n"));
-		} finally {
-			sw.close();
 		}
 	}
 
 	@Test
 	public void testStringArrayLoad() throws Exception {
-		final Reader reader = new StringReader("あ,NULL,う,えお\r\nア,イ,ウ,エオ\r\nNULL,NULL,NULL,NULL\r\nNULL,NULL,NULL,null\r\n");
-		try {
+		try (Reader reader = new StringReader("あ,NULL,う,えお\r\nア,イ,ウ,エオ\r\nNULL,NULL,NULL,NULL\r\nNULL,NULL,NULL,null\r\n")) {
 			final List<StringArrayEntity> list = new CsvEntityManager(cfg).load(StringArrayEntity.class).from(reader);
 
 			assertThat(list.size(), is(4));
@@ -217,14 +207,12 @@ public class CsvEntityManagerTest {
 			assertThat(o4.array[1], nullValue());
 			assertThat(o4.array[2], nullValue());
 			assertThat(o4.str, is("null"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testIntegerArraySave() throws Exception {
-		final List<IntegerArrayEntity> list = new ArrayList<IntegerArrayEntity>();
+		final List<IntegerArrayEntity> list = new ArrayList<>();
 
 		final IntegerArrayEntity o1 = new IntegerArrayEntity();
 		o1.array = new Integer[]{ 1, null, 3 };
@@ -236,19 +224,15 @@ public class CsvEntityManagerTest {
 		o2.str = "エオ";
 		list.add(o2);
 
-		final StringWriter sw = new StringWriter();
-		try {
+		try (StringWriter sw = new StringWriter()) {
 			new CsvEntityManager(cfg).save(list, IntegerArrayEntity.class).to(sw);
 			assertThat(sw.getBuffer().toString(), is("1,NULL,3,えお\r\n4,5,6,エオ\r\n"));
-		} finally {
-			sw.close();
 		}
 	}
 
 	@Test
 	public void testIntegerArrayLoad() throws Exception {
-		final Reader reader = new StringReader("1,NULL,3,えお\r\n4,5,6,エオ\r\n");
-		try {
+		try (Reader reader = new StringReader("1,NULL,3,えお\r\n4,5,6,エオ\r\n")) {
 			final List<IntegerArrayEntity> list = new CsvEntityManager(cfg).load(IntegerArrayEntity.class).from(reader);
 
 			assertThat(list.size(), is(2));
@@ -266,14 +250,12 @@ public class CsvEntityManagerTest {
 			assertThat(o2.array[1], is(5));
 			assertThat(o2.array[2], is(6));
 			assertThat(o2.str, is("エオ"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testIntArraySave() throws Exception {
-		final List<IntArrayEntity> list = new ArrayList<IntArrayEntity>();
+		final List<IntArrayEntity> list = new ArrayList<>();
 
 		final IntArrayEntity o1 = new IntArrayEntity();
 		o1.array = new int[]{ 1, 2, 3 };
@@ -285,19 +267,15 @@ public class CsvEntityManagerTest {
 		o2.str = "エオ";
 		list.add(o2);
 
-		final StringWriter sw = new StringWriter();
-		try {
+		try (StringWriter sw = new StringWriter()) {
 			new CsvEntityManager(cfg).save(list, IntArrayEntity.class).to(sw);
 			assertThat(sw.getBuffer().toString(), is("1,2,3,えお\r\n4,5,6,エオ\r\n"));
-		} finally {
-			sw.close();
 		}
 	}
 
 	@Test
 	public void testIntArrayLoad() throws Exception {
-		final Reader reader = new StringReader("1,2,3,えお\r\n4,5,6,エオ\r\n");
-		try {
+		try (Reader reader = new StringReader("1,2,3,えお\r\n4,5,6,エオ\r\n")) {
 			final List<IntArrayEntity> list = new CsvEntityManager(cfg).load(IntArrayEntity.class).from(reader);
 
 			assertThat(list.size(), is(2));
@@ -315,15 +293,12 @@ public class CsvEntityManagerTest {
 			assertThat(o2.array[1], is(5));
 			assertThat(o2.array[2], is(6));
 			assertThat(o2.str, is("エオ"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testWriteDisableHeader1() throws Exception {
-		final StringWriter sw = new StringWriter();
-		try {
+		try (StringWriter sw = new StringWriter()) {
 			// Arrange
 			sw.append("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\nBBBB,bbb,NULL,0,NULL,NULL\r\nCCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n");
 			assertThat(sw.getBuffer().toString(), is("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\nBBBB,bbb,NULL,0,NULL,NULL\r\nCCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n"));
@@ -331,7 +306,7 @@ public class CsvEntityManagerTest {
 			final DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			df.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
 
-			final List<Price> list = new ArrayList<Price>();
+			final List<Price> list = new ArrayList<>();
 			list.add(new Price("AAAA", "aaa", 10000, 10, df.parse("2008/10/28 10:24:00")));
 			list.add(new Price("BBBB", "bbb", null, 0, null));
 			list.add(new Price("CCCC", "ccc", 20000, 100, df.parse("2008/10/26 14:20:10")));
@@ -343,22 +318,19 @@ public class CsvEntityManagerTest {
 			// Assert
 			assertThat(sw.getBuffer().toString(), is(
 					"シンボル,名称,価格,出来高,日付,時刻\r\n" +
-					"AAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\n" +
-					"BBBB,bbb,NULL,0,NULL,NULL\r\n" +
-					"CCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n" +
-					"AAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\n" +
-					"BBBB,bbb,NULL,0,NULL,NULL\r\n" +
-					"CCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n"
-				));
-		} finally {
-			sw.close();
+							"AAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\n" +
+							"BBBB,bbb,NULL,0,NULL,NULL\r\n" +
+							"CCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n" +
+							"AAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\n" +
+							"BBBB,bbb,NULL,0,NULL,NULL\r\n" +
+							"CCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n"
+			));
 		}
 	}
 
 	@Test
 	public void testWriteDisableHeader2() throws Exception {
-		final StringWriter sw = new StringWriter();
-		try {
+		try (StringWriter sw = new StringWriter()) {
 			// Arrange
 			sw.append("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\nBBBB,bbb,NULL,0,NULL,NULL\r\nCCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n");
 			assertThat(sw.getBuffer().toString(), is("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\nBBBB,bbb,NULL,0,NULL,NULL\r\nCCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n"));
@@ -366,7 +338,7 @@ public class CsvEntityManagerTest {
 			final DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 			df.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
 
-			final List<Price> list = new ArrayList<Price>();
+			final List<Price> list = new ArrayList<>();
 			list.add(new Price("AAAA", "aaa", 10000, 10, df.parse("2008/10/28 10:24:00")));
 			list.add(new Price("BBBB", "bbb", null, 0, null));
 			list.add(new Price("CCCC", "ccc", 20000, 100, df.parse("2008/10/26 14:20:10")));
@@ -378,16 +350,14 @@ public class CsvEntityManagerTest {
 			// Assert
 			assertThat(sw.getBuffer().toString(), is(
 					"シンボル,名称,価格,出来高,日付,時刻\r\n" +
-					"AAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\n" +
-					"BBBB,bbb,NULL,0,NULL,NULL\r\n" +
-					"CCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n" +
-					"シンボル,名称,価格,出来高,日付,時刻\r\n" +
-					"AAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\n" +
-					"BBBB,bbb,NULL,0,NULL,NULL\r\n" +
-					"CCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n"
-				));
-		} finally {
-			sw.close();
+							"AAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\n" +
+							"BBBB,bbb,NULL,0,NULL,NULL\r\n" +
+							"CCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n" +
+							"シンボル,名称,価格,出来高,日付,時刻\r\n" +
+							"AAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\n" +
+							"BBBB,bbb,NULL,0,NULL,NULL\r\n" +
+							"CCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n"
+			));
 		}
 	}
 

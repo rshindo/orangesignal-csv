@@ -104,10 +104,10 @@ public class ColumnNameMappingBeanListHandler<T> extends AbstractBeanListHandler
 	@Override
 	public List<T> load(final CsvReader reader, final boolean ignoreScalar) throws IOException {
 		@SuppressWarnings("resource")
-		final CsvColumnNameMappingBeanReader<T> r = new CsvColumnNameMappingBeanReader<T>(reader, template);
+		final CsvColumnNameMappingBeanReader<T> r = new CsvColumnNameMappingBeanReader<>(reader, template);
 
 		// データ部を処理します。
-		final List<T> results = new ArrayList<T>();
+		final List<T> results = new ArrayList<>();
 		final boolean order = ignoreScalar || orders != null && !orders.isEmpty();
 		int offset = 0;
 
@@ -139,7 +139,7 @@ public class ColumnNameMappingBeanListHandler<T> extends AbstractBeanListHandler
 	@Override
 	public void save(final List<T> list, final CsvWriter writer) throws IOException {
 		@SuppressWarnings("resource")
-		final CsvColumnNameMappingBeanWriter<T> w = new CsvColumnNameMappingBeanWriter<T>(writer, template, header);
+		final CsvColumnNameMappingBeanWriter<T> w = new CsvColumnNameMappingBeanWriter<>(writer, template, header);
 
 		// データ部を処理します。
 		for (final T bean : list) {

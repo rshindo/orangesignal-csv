@@ -114,7 +114,7 @@ public class CsvColumnNameMapReader implements Closeable {
 			if (columnCount == -1) {
 				// ヘッダ部を処理します。
 				columnCount = columnNames.size();
-				base = new LinkedHashMap<String, String>(columnCount);
+				base = new LinkedHashMap<>(columnCount);
 				for (final String columnName : columnNames) {
 					base.put(columnName, null);
 				}
@@ -213,7 +213,7 @@ public class CsvColumnNameMapReader implements Closeable {
 	}
 
 	private Map<String, String> convert(final List<String> values) {
-		final Map<String, String> map = new LinkedHashMap<String, String>(base);
+		final Map<String, String> map = new LinkedHashMap<>(base);
 		final int len = Math.min(columnCount, values.size());
 		for (int pos = 0; pos < len; pos++) {
 			map.put(columnNames.get(pos), values.get(pos));

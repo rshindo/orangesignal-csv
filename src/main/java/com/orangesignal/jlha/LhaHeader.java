@@ -897,7 +897,7 @@ public class LhaHeader implements Cloneable {
 		// ExtraExtHeadersに登録する。
 		if (3 < length) {
 			if (extraExtHeaders == null) {
-				extraExtHeaders = new Vector<byte[]>();
+				extraExtHeaders = new Vector<>();
 			}
 			final byte[] ExtHeaderData = new byte[length];
 			System.arraycopy(headerData, index, ExtHeaderData, 0, length);    // throws IndexOutOfBoundsException
@@ -979,7 +979,7 @@ public class LhaHeader implements Cloneable {
 	 */
 	protected void importExtendHeader(final byte[] headerData, final int index, final int length, final String encode) throws UnsupportedEncodingException {
 		if (extraExtHeaders == null) {
-			extraExtHeaders = new Vector<byte[]>();
+			extraExtHeaders = new Vector<>();
 		}
 		final byte[] extHeaderData = new byte[length];
 		System.arraycopy(headerData, index, extHeaderData, 0, length);        // throws IndexOutOfBoundsException
@@ -1616,7 +1616,7 @@ public class LhaHeader implements Cloneable {
 		final byte LhaFileSeparator = (byte) 0xFF;
 		final String dir = getDirName();
 
-		final Vector<byte[]> vec = new Vector<byte[]>();
+		final Vector<byte[]> vec = new Vector<>();
 		int index = 0;
 		int len = 0;
 		int length = 0;
@@ -1707,7 +1707,7 @@ public class LhaHeader implements Cloneable {
 		final byte[] dirNameExtHeader = exportDirNameExtHeader(encode);
 
 		final byte[][] ExtraExtHeaders = exportExtendHeaders(encode);
-		final Vector<byte[]> headers = new Vector<byte[]>();
+		final Vector<byte[]> headers = new Vector<>();
 
 		headers.addElement(commonExtHeader);
 		headers.addElement(filenameExtHeader);
@@ -2079,7 +2079,7 @@ public class LhaHeader implements Cloneable {
 	 */
 	private static byte[] readLevel1HeaderData(final int baseHeaderLength, final int baseHeaderChecksum, final int compressMethod1, final InputStream in) throws IOException {
 		int headerLength = baseHeaderLength + 2;
-		final Vector<byte[]> headers = new Vector<byte[]>();
+		final Vector<byte[]> headers = new Vector<>();
 		byte[] headerData = new byte[headerLength];
 		headerData[0] = (byte) baseHeaderLength;
 		headerData[1] = (byte) baseHeaderChecksum;
@@ -2225,7 +2225,7 @@ public class LhaHeader implements Cloneable {
 			generator = LhaProperty.getProperty("lha.header");
 		}
 
-		final Hashtable<String, Object> substitute = new Hashtable<String, Object>();
+		final Hashtable<String, Object> substitute = new Hashtable<>();
 		substitute.put("data", headerData);
 		substitute.put("encoding", encoding);
 

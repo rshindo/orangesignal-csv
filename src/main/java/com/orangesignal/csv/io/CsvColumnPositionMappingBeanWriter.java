@@ -77,7 +77,7 @@ public class CsvColumnPositionMappingBeanWriter<T> implements Closeable, Flushab
 	 * @throws IllegalArgumentException {@code writer} または {@code type} が {@code null} の場合。
 	 */
 	public static <T> CsvColumnPositionMappingBeanWriter<T> newInstance(final CsvWriter writer, final Class<T> type) {
-		return new CsvColumnPositionMappingBeanWriter<T>(writer, type);
+		return new CsvColumnPositionMappingBeanWriter<>(writer, type);
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class CsvColumnPositionMappingBeanWriter<T> implements Closeable, Flushab
 	 * @since 2.1
 	 */
 	public static <T> CsvColumnPositionMappingBeanWriter<T> newInstance(final CsvWriter writer, final Class<T> type, final boolean header) {
-		return new CsvColumnPositionMappingBeanWriter<T>(writer, type, header);
+		return new CsvColumnPositionMappingBeanWriter<>(writer, type, header);
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class CsvColumnPositionMappingBeanWriter<T> implements Closeable, Flushab
 	 * @throws IllegalArgumentException {@code writer} または {@code template} が {@code null} の場合。
 	 */
 	public static <T> CsvColumnPositionMappingBeanWriter<T> newInstance(final CsvWriter writer, final CsvColumnPositionMappingBeanTemplate<T> template) {
-		return new CsvColumnPositionMappingBeanWriter<T>(writer, template);
+		return new CsvColumnPositionMappingBeanWriter<>(writer, template);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class CsvColumnPositionMappingBeanWriter<T> implements Closeable, Flushab
 	 * @since 2.1
 	 */
 	public static <T> CsvColumnPositionMappingBeanWriter<T> newInstance(final CsvWriter writer, final CsvColumnPositionMappingBeanTemplate<T> template, final boolean header) {
-		return new CsvColumnPositionMappingBeanWriter<T>(writer, template, header);
+		return new CsvColumnPositionMappingBeanWriter<>(writer, template, header);
 	}
 
 	// ------------------------------------------------------------------------
@@ -134,7 +134,7 @@ public class CsvColumnPositionMappingBeanWriter<T> implements Closeable, Flushab
 	 * @throws IllegalArgumentException {@code writer} または {@code type} が {@code null} の場合。
 	 */
 	public CsvColumnPositionMappingBeanWriter(final CsvWriter writer, final Class<T> type) {
-		this(writer, new CsvColumnPositionMappingBeanTemplate<T>(type), true);
+		this(writer, new CsvColumnPositionMappingBeanTemplate<>(type), true);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class CsvColumnPositionMappingBeanWriter<T> implements Closeable, Flushab
 	 * @since 2.1
 	 */
 	public CsvColumnPositionMappingBeanWriter(final CsvWriter writer, final Class<T> type, final boolean header) {
-		this(writer, new CsvColumnPositionMappingBeanTemplate<T>(type), header);
+		this(writer, new CsvColumnPositionMappingBeanTemplate<>(type), header);
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class CsvColumnPositionMappingBeanWriter<T> implements Closeable, Flushab
 				continue;
 			}
 			final Field f = FieldUtils.getField(type, e.getValue());
-			values[pos] = template.objectToString(Integer.valueOf(pos), FieldUtils.getFieldValue(bean, f));
+			values[pos] = template.objectToString(pos, FieldUtils.getFieldValue(bean, f));
 		}
 		return Arrays.asList(values);
 	}

@@ -112,9 +112,7 @@ abstract class SerializationUtils {
 		try {
 			in = new ObjectInputStream(inputStream);
 			return in.readObject();
-		} catch (final ClassNotFoundException e) {
-			throw new IllegalStateException(e.getMessage(), e);
-		} catch (final IOException e) {
+		} catch (final ClassNotFoundException | IOException e) {
 			throw new IllegalStateException(e.getMessage(), e);
 		} finally {
 			Csv.closeQuietly(in);

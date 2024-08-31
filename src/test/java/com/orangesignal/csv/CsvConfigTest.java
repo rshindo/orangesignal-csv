@@ -369,7 +369,7 @@ public final class CsvConfigTest {
 
 	@Test
 	public void testGetLineSeparator() {
-		assertThat(new CsvConfig().getLineSeparator(), is(System.getProperty("line.separator")));
+		assertThat(new CsvConfig().getLineSeparator(), is(System.lineSeparator()));
 	}
 
 	@Test

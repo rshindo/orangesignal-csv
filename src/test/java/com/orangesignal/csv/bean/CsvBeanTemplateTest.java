@@ -37,14 +37,14 @@ public class CsvBeanTemplateTest {
 	public void testIncludesIllegalArgumentException() {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectMessage("Only includes or excludes may be specified.");
-		new CsvBeanTemplate<SampleBean>(SampleBean.class).excludes("aaa").includes("bbb");
+		new CsvBeanTemplate<>(SampleBean.class).excludes("aaa").includes("bbb");
 	}
 
 	@Test
 	public void testExcludesIllegalArgumentException() {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectMessage("Only includes or excludes may be specified.");
-		new CsvBeanTemplate<SampleBean>(SampleBean.class).includes("aaa").excludes("bbb");
+		new CsvBeanTemplate<>(SampleBean.class).includes("aaa").excludes("bbb");
 	}
 
 }

@@ -535,7 +535,7 @@ public class BitInputStream extends InputStream {
 				bitBuffer = cache[cachePosition++] << 24 + count;
 				count = 0;
 			}
-		} catch (final LocalEOFException exception) {
+		} catch (final LocalEOFException ignore) {
 		}
 		return requested - count;
 	}

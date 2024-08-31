@@ -286,7 +286,7 @@ final class LhaProperty {
 				}
 			}
 			return System.getProperty(key, def);
-		} catch (final SecurityException exception) {
+		} catch (final SecurityException ignored) {
 		}
 
 		return def;
@@ -390,7 +390,7 @@ final class LhaProperty {
 		if (!arguments.equals("")) {
 			final StringTokenizer tokenizer = new StringTokenizer(arguments,
 					",()[]", true);
-			final Stack<Object> stack = new Stack<Object>();
+			final Stack<Object> stack = new Stack<>();
 			int pos = 0;
 			while (tokenizer.hasMoreTokens()) {
 				final String token = tokenizer.nextToken();
@@ -409,7 +409,7 @@ final class LhaProperty {
 				} else if (token.equals(",")) {
 					if (stack.empty() || !stack.peek().equals("(")
 							&& !stack.peek().equals("[")) {
-						stack.push(new Integer(pos));
+						stack.push(pos);
 					}
 				}
 				pos += token.length();
@@ -421,7 +421,7 @@ final class LhaProperty {
 				String arg;
 				if (i < stack.size()) {
 					arg = arguments.substring(pos,
-							((Integer) stack.elementAt(i)).intValue());
+							(Integer) stack.elementAt(i));
 				} else {
 					arg = arguments.substring(pos);
 				}
@@ -464,7 +464,7 @@ final class LhaProperty {
 		final String arguments = source.substring(source.indexOf('[') + 1, source.lastIndexOf(']')).trim();
 		if (!arguments.equals("")) {
 			final StringTokenizer tokenizer = new StringTokenizer(arguments, ",()[]", true);
-			final Stack<Object> stack = new Stack<Object>();
+			final Stack<Object> stack = new Stack<>();
 			int pos = 0;
 			while (tokenizer.hasMoreTokens()) {
 				final String token = tokenizer.nextToken();
@@ -482,7 +482,7 @@ final class LhaProperty {
 					}
 				} else if (token.equals(",")) {
 					if (stack.empty() || !stack.peek().equals("(") && !stack.peek().equals("[")) {
-						stack.push(new Integer(pos));
+						stack.push(pos);
 					}
 				}
 				pos += token.length();
@@ -493,7 +493,7 @@ final class LhaProperty {
 			for (int i = 0; i < stack.size() + 1; i++) {
 				String arg;
 				if (i < stack.size()) {
-					arg = arguments.substring(pos, ((Integer) stack.elementAt(i)).intValue());
+					arg = arguments.substring(pos, (Integer) stack.elementAt(i));
 				} else {
 					arg = arguments.substring(pos);
 				}
@@ -523,8 +523,7 @@ final class LhaProperty {
 			try {
 				Class.forName(classname);
 				return classname;
-			} catch (final ClassNotFoundException exception) {
-			} catch (final LinkageError error) {
+			} catch (final ClassNotFoundException | LinkageError ignored) {
 			}
 		}
 		return str;
@@ -547,7 +546,7 @@ final class LhaProperty {
 				final String key = enumkey.nextElement();
 				property.put(key, bundle.getString(key));
 			}
-		} catch (final MissingResourceException exception) {
+		} catch (final MissingResourceException ignored) {
 		}
 
 		if (property.getProperty("lha.encoding").equals("ShiftJISAuto")) {

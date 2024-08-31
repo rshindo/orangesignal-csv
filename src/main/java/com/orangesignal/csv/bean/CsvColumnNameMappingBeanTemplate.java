@@ -36,7 +36,7 @@ public class CsvColumnNameMappingBeanTemplate<T> extends AbstractCsvBeanTemplate
 	/**
 	 * 項目名と Java プログラム要素のフィールド名のマップを保持します。
 	 */
-	private Map<String, String> columnMapping = new LinkedHashMap<String, String>();
+	private Map<String, String> columnMapping = new LinkedHashMap<>();
 
 	/**
 	 * 区切り文字形式データフィルタを保持します。
@@ -54,7 +54,7 @@ public class CsvColumnNameMappingBeanTemplate<T> extends AbstractCsvBeanTemplate
 	 * @throws IllegalArgumentException {@code type} が {@code null} の場合。
 	 */
 	public static <T> CsvColumnNameMappingBeanTemplate<T> newInstance(final Class<T> type) {
-		return new CsvColumnNameMappingBeanTemplate<T>(type);
+		return new CsvColumnNameMappingBeanTemplate<>(type);
 	}
 
 	// -----------------------------------------------------------------------
@@ -93,7 +93,7 @@ public class CsvColumnNameMappingBeanTemplate<T> extends AbstractCsvBeanTemplate
 		if (columnMapping == null) {
 			throw new IllegalArgumentException("Column mapping must not be null");
 		}
-		this.columnMapping = new LinkedHashMap<String, String>(columnMapping);
+		this.columnMapping = new LinkedHashMap<>(columnMapping);
 	}
 
 	@Override
@@ -148,7 +148,7 @@ public class CsvColumnNameMappingBeanTemplate<T> extends AbstractCsvBeanTemplate
 	 * @return 項目名のリスト
 	 */
 	public List<String> createColumnNames() {
-		final List<String> columnNames = new ArrayList<String>();
+		final List<String> columnNames = new ArrayList<>();
 		for (final Map.Entry<String, String> entry : columnMapping.entrySet()) {
 			columnNames.add(entry.getKey());
 		}

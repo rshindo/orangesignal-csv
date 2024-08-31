@@ -93,10 +93,10 @@ public class CsvEntityReaderTest {
 
 	@Test
 	public void testConstructorCsvReaderClass() throws IOException {
-		final CsvEntityReader<Price> reader = new CsvEntityReader<Price>(
+		final CsvEntityReader<Price> reader = new CsvEntityReader<>(
 				new CsvReader(new StringReader("")),
 				Price.class
-			);
+		);
 		reader.close();
 	}
 
@@ -104,10 +104,10 @@ public class CsvEntityReaderTest {
 	public void testConstructorCsvReaderClassIllegalArgumentException1() throws IOException {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectMessage("CsvReader must not be null");
-		final CsvEntityReader<Price> reader = new CsvEntityReader<Price>(
+		final CsvEntityReader<Price> reader = new CsvEntityReader<>(
 				null,
 				Price.class
-			);
+		);
 		reader.close();
 	}
 
@@ -116,19 +116,19 @@ public class CsvEntityReaderTest {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectMessage("Class must not be null");
 		final Class<Price> type = null;
-		final CsvEntityReader<Price> reader = new CsvEntityReader<Price>(
+		final CsvEntityReader<Price> reader = new CsvEntityReader<>(
 				new CsvReader(new StringReader("")),
 				type
-			);
+		);
 		reader.close();
 	}
 
 	@Test
 	public void testConstructorCsvReaderCsvBeanTemplate() throws IOException {
-		final CsvEntityReader<Price> reader = new CsvEntityReader<Price>(
+		final CsvEntityReader<Price> reader = new CsvEntityReader<>(
 				new CsvReader(new StringReader("")),
 				CsvEntityTemplate.newInstance(Price.class)
-			);
+		);
 		reader.close();
 	}
 
@@ -136,10 +136,10 @@ public class CsvEntityReaderTest {
 	public void testConstructorCsvReaderCsvBeanTemplateIllegalArgumentException1() throws IOException {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectMessage("CsvReader must not be null");
-		final CsvEntityReader<Price> reader = new CsvEntityReader<Price>(
+		final CsvEntityReader<Price> reader = new CsvEntityReader<>(
 				null,
 				CsvEntityTemplate.newInstance(Price.class)
-			);
+		);
 		reader.close();
 	}
 
@@ -148,10 +148,10 @@ public class CsvEntityReaderTest {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectMessage("CsvEntityTemplate must not be null");
 		final CsvEntityTemplate<Price> template = null;
-		final CsvEntityReader<Price> reader = new CsvEntityReader<Price>(
+		final CsvEntityReader<Price> reader = new CsvEntityReader<>(
 				new CsvReader(new StringReader("")),
 				template
-			);
+		);
 		reader.close();
 	}
 
@@ -176,11 +176,10 @@ public class CsvEntityReaderTest {
 		exception.expect(CsvColumnException.class);
 		exception.expectMessage(String.format("[line: %d] %s must not be null", 3, "シンボル"));
 
-		final CsvEntityReader<RequiredPrice> reader = CsvEntityReader.newInstance(
+		try (CsvEntityReader<RequiredPrice> reader = CsvEntityReader.newInstance(
 				new CsvReader(new StringReader("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2009/10/28,10:24:00\r\nNULL,NULL,NULL,0,NULL,NULL"), cfg),
 				RequiredPrice.class
-			);
-		try {
+		)) {
 			final RequiredPrice o1 = reader.read();
 			assertThat(o1.symbol, is("AAAA"));
 			assertThat(o1.name, is("aaa"));
@@ -193,18 +192,15 @@ public class CsvEntityReaderTest {
 
 			// Act
 			reader.read();
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testRequired() throws IOException {
-		final CsvEntityReader<RequiredPrice> reader = CsvEntityReader.newInstance(
+		try (CsvEntityReader<RequiredPrice> reader = CsvEntityReader.newInstance(
 				new CsvReader(new StringReader("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2009/10/28,10:24:00\r\nXXXX,xxx,NULL,0,NULL,NULL"), cfg),
 				RequiredPrice.class
-			);
-		try {
+		)) {
 			final RequiredPrice o1 = reader.read();
 			assertThat(o1.symbol, is("AAAA"));
 			assertThat(o1.name, is("aaa"));
@@ -224,18 +220,15 @@ public class CsvEntityReaderTest {
 
 			final RequiredPrice last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testDefaultValue() throws IOException {
-		final CsvEntityReader<DefaultValuePrice> reader = CsvEntityReader.newInstance(
+		try (CsvEntityReader<DefaultValuePrice> reader = CsvEntityReader.newInstance(
 				new CsvReader(new StringReader("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2009/10/28,10:24:00\r\nNULL,NULL,NULL,0,NULL,NULL"), cfg),
 				DefaultValuePrice.class
-			);
-		try {
+		)) {
 			final DefaultValuePrice o1 = reader.read();
 			assertThat(o1.symbol, is("AAAA"));
 			assertThat(o1.name, is("aaa"));
@@ -255,18 +248,15 @@ public class CsvEntityReaderTest {
 
 			final DefaultValuePrice last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoadPrice() throws IOException {
-		final CsvEntityReader<Price> reader = CsvEntityReader.newInstance(
+		try (CsvEntityReader<Price> reader = CsvEntityReader.newInstance(
 				new CsvReader(new StringReader("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2009/10/28,10:24:00\r\nBBBB,bbb,NULL,0,NULL,NULL"), cfg),
 				Price.class
-			);
-		try {
+		)) {
 			final Price o1 = reader.read();
 			assertThat(o1.symbol, is("AAAA"));
 			assertThat(o1.name, is("aaa"));
@@ -286,8 +276,6 @@ public class CsvEntityReaderTest {
 
 			final Price last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -296,11 +284,10 @@ public class CsvEntityReaderTest {
 		final CsvConfig cfg = new CsvConfig();
 		cfg.setIgnoreEmptyLines(true);
 
-		final CsvEntityReader<Issue30> reader = CsvEntityReader.newInstance(
+		try (CsvEntityReader<Issue30> reader = CsvEntityReader.newInstance(
 				new CsvReader(new StringReader("1,name\r\n\r\n2,dare"), cfg),
 				Issue30.class
-			);
-		try {
+		)) {
 			final Issue30 o1 = reader.read();
 			assertThat(o1.no, is(1));
 			assertThat(o1.name, is("name"));
@@ -311,18 +298,15 @@ public class CsvEntityReaderTest {
 			final Issue30 o3 = reader.read();
 			assertThat(o3.no, is(2));
 			assertThat(o3.name, is("dare"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoadPrice2() throws IOException {
-		final CsvEntityReader<Price2> reader = CsvEntityReader.newInstance(
+		try (CsvEntityReader<Price2> reader = CsvEntityReader.newInstance(
 				new CsvReader(new StringReader("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2009/10/28,10:24:00\r\nBBBB,bbb,NULL,0,NULL,NULL"), cfg),
 				Price2.class
-			);
-		try {
+		)) {
 			final Price2 o1 = reader.read();
 			assertNull(o1.symbol);
 			assertNull(o1.name);
@@ -339,8 +323,6 @@ public class CsvEntityReaderTest {
 
 			final Price2 last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -349,22 +331,21 @@ public class CsvEntityReaderTest {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		df.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
 
-		final CsvEntityReader<Price> reader = CsvEntityReader.newInstance(
+		try (CsvEntityReader<Price> reader = CsvEntityReader.newInstance(
 				new CsvReader(new StringReader(
 						"シンボル,名称,価格,出来高,日付,時刻\r\n" +
-						"GCQ09,COMEX 金 2009年08月限,1\\,058.70,10,2008/08/06,12:00:00\r\n" +
-						"GCU09,COMEX 金 2009年09月限,1\\,068.70,10,2008/09/06,12:00:00\r\n" +
-						"GCV09,COMEX 金 2009年10月限,1\\,078.70,11,2008/10/06,12:00:00\r\n" +
-						"GCX09,COMEX 金 2009年11月限,1\\,088.70,12,2008/11/06,12:00:00\r\n" +
-						"GCZ09,COMEX 金 2009年12月限,1\\,098.70,13,2008/12/06,12:00:00\r\n"
-					), cfg),
-					CsvEntityTemplate.newInstance(Price.class)
+								"GCQ09,COMEX 金 2009年08月限,1\\,058.70,10,2008/08/06,12:00:00\r\n" +
+								"GCU09,COMEX 金 2009年09月限,1\\,068.70,10,2008/09/06,12:00:00\r\n" +
+								"GCV09,COMEX 金 2009年10月限,1\\,078.70,11,2008/10/06,12:00:00\r\n" +
+								"GCX09,COMEX 金 2009年11月限,1\\,088.70,12,2008/11/06,12:00:00\r\n" +
+								"GCZ09,COMEX 金 2009年12月限,1\\,098.70,13,2008/12/06,12:00:00\r\n"
+				), cfg),
+				CsvEntityTemplate.newInstance(Price.class)
 						.filter(new SimpleCsvNamedValueFilter()
 								.ne("シンボル", "gcu09", true)
 								.ne("日付", "2008/11/06")
-							)
-			);
-		try {
+						)
+		)) {
 			final Price o0 = reader.read();
 			assertThat(o0.symbol, is("GCQ09"));
 			assertThat(o0.name, is("COMEX 金 2009年08月限"));
@@ -388,8 +369,6 @@ public class CsvEntityReaderTest {
 
 			final Price last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 

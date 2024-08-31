@@ -37,7 +37,7 @@ public abstract class BeanLogicalExpression implements BeanFilter {
 	 * デフォルトコンストラクタです。
 	 */
 	protected BeanLogicalExpression() {
-		filters = new ArrayList<BeanFilter>();
+		filters = new ArrayList<>();
 	}
 
 	/**

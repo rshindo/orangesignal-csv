@@ -37,7 +37,7 @@ public abstract class CsvNamedValueLogicalExpression implements CsvNamedValueFil
 	 * デフォルトコンストラクタです。
 	 */
 	protected CsvNamedValueLogicalExpression() {
-		filters = new ArrayList<CsvNamedValueFilter>();
+		filters = new ArrayList<>();
 	}
 
 	/**

@@ -71,9 +71,8 @@ public class ColumnNameMappingBeanListHandlerTest {
 
 	@Test
 	public void testLoad1() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
-			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class).load(reader);
+		try (CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
+			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<>(SampleBean.class).load(reader);
 			assertThat(list.size(), is(2));
 			final SampleBean o1 = list.get(0);
 			assertThat(o1.symbol, is("AAAA"));
@@ -85,21 +84,18 @@ public class ColumnNameMappingBeanListHandlerTest {
 			assertThat(o2.name, is("bbb"));
 			assertNull(o2.price);
 			assertThat(o2.volume.longValue(), is(0L));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad2() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
-			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class)
-				.column("シンボル", "symbol")
-				.column("名称",     "name")
-				.column("価格",     "price")
-				.column("出来高",   "volume")
-				.load(reader);
+		try (CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
+			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<>(SampleBean.class)
+					.column("シンボル", "symbol")
+					.column("名称", "name")
+					.column("価格", "price")
+					.column("出来高", "volume")
+					.load(reader);
 
 			assertThat(list.size(), is(2));
 			final SampleBean o1 = list.get(0);
@@ -112,20 +108,17 @@ public class ColumnNameMappingBeanListHandlerTest {
 			assertThat(o2.name, is("bbb"));
 			assertNull(o2.price);
 			assertThat(o2.volume.longValue(), is(0L));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad3() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
-			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class)
-				.column("シンボル", "symbol")
-				.column("価格",     "price")
-				.column("出来高",   "volume")
-				.load(reader);
+		try (CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
+			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<>(SampleBean.class)
+					.column("シンボル", "symbol")
+					.column("価格", "price")
+					.column("出来高", "volume")
+					.load(reader);
 
 			assertThat(list.size(), is(2));
 			final SampleBean o1 = list.get(0);
@@ -138,21 +131,18 @@ public class ColumnNameMappingBeanListHandlerTest {
 			assertNull(o2.name);
 			assertNull(o2.price);
 			assertThat(o2.volume.longValue(), is(0L));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad4() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
-			final Map<String, String> columnMapping = new HashMap<String, String>();
+		try (CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
+			final Map<String, String> columnMapping = new HashMap<>();
 			columnMapping.put("シンボル", "symbol");
-			columnMapping.put("名称",     "name");
-			columnMapping.put("価格",     "price");
-			columnMapping.put("出来高",   "volume");
-			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class).columnMapping(columnMapping).load(reader);
+			columnMapping.put("名称", "name");
+			columnMapping.put("価格", "price");
+			columnMapping.put("出来高", "volume");
+			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<>(SampleBean.class).columnMapping(columnMapping).load(reader);
 
 			assertThat(list.size(), is(2));
 			final SampleBean o1 = list.get(0);
@@ -165,20 +155,17 @@ public class ColumnNameMappingBeanListHandlerTest {
 			assertThat(o2.name, is("bbb"));
 			assertNull(o2.price);
 			assertThat(o2.volume.longValue(), is(0L));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad5() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
-			final Map<String, String> columnMapping = new HashMap<String, String>();
+		try (CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
+			final Map<String, String> columnMapping = new HashMap<>();
 			columnMapping.put("シンボル", "symbol");
-			columnMapping.put("価格",     "price");
-			columnMapping.put("出来高",   "volume");
-			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class).columnMapping(columnMapping).load(reader);
+			columnMapping.put("価格", "price");
+			columnMapping.put("出来高", "volume");
+			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<>(SampleBean.class).columnMapping(columnMapping).load(reader);
 
 			assertThat(list.size(), is(2));
 			final SampleBean o1 = list.get(0);
@@ -191,23 +178,20 @@ public class ColumnNameMappingBeanListHandlerTest {
 			assertNull(o2.name);
 			assertNull(o2.price);
 			assertThat(o2.volume.longValue(), is(0L));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad6() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2009/10/28,10:24:00\r\nBBBB,bbb,NULL,0,NULL,NULL"), cfg);
-		try {
-			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class)
-				.column("シンボル", "symbol")
-				.column("名称",     "name")
-				.column("価格",     "price", new DecimalFormat("#,##0"))
-				.column("出来高",   "volume")
-				.column("日付",     "date", new SimpleDateFormat("yyyy/MM/dd"))
-				.column("時刻",     "date", new SimpleDateFormat("HH:mm:ss"))
-				.load(reader);
+		try (CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2009/10/28,10:24:00\r\nBBBB,bbb,NULL,0,NULL,NULL"), cfg)) {
+			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<>(SampleBean.class)
+					.column("シンボル", "symbol")
+					.column("名称", "name")
+					.column("価格", "price", new DecimalFormat("#,##0"))
+					.column("出来高", "volume")
+					.column("日付", "date", new SimpleDateFormat("yyyy/MM/dd"))
+					.column("時刻", "date", new SimpleDateFormat("HH:mm:ss"))
+					.load(reader);
 
 			assertThat(list.size(), is(2));
 			final SampleBean o1 = list.get(0);
@@ -222,25 +206,22 @@ public class ColumnNameMappingBeanListHandlerTest {
 			assertNull(o2.price);
 			assertThat(o2.volume.longValue(), is(0L));
 			assertNull(o2.date);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoadOffsetLimit() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2009/10/28,10:24:00\r\nBBBB,bbb,NULL,0,NULL,NULL"), cfg);
-		try {
-			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class)
-				.column("シンボル", "symbol")
-				.column("名称",     "name")
-				.column("価格",     "price", new DecimalFormat("#,##0"))
-				.column("出来高",   "volume")
-				.column("日付",     "date", new SimpleDateFormat("yyyy/MM/dd"))
-				.column("時刻",     "date", new SimpleDateFormat("HH:mm:ss"))
-				.offset(1)
-				.limit(1)
-				.load(reader);
+		try (CsvReader reader = new CsvReader(new StringReader("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2009/10/28,10:24:00\r\nBBBB,bbb,NULL,0,NULL,NULL"), cfg)) {
+			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<>(SampleBean.class)
+					.column("シンボル", "symbol")
+					.column("名称", "name")
+					.column("価格", "price", new DecimalFormat("#,##0"))
+					.column("出来高", "volume")
+					.column("日付", "date", new SimpleDateFormat("yyyy/MM/dd"))
+					.column("時刻", "date", new SimpleDateFormat("HH:mm:ss"))
+					.offset(1)
+					.limit(1)
+					.load(reader);
 
 			assertThat(list.size(), is(1));
 			final SampleBean o2 = list.get(0);
@@ -249,33 +230,30 @@ public class ColumnNameMappingBeanListHandlerTest {
 			assertNull(o2.price);
 			assertThat(o2.volume.longValue(), is(0L));
 			assertNull(o2.date);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoadFilter() throws Exception {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-		final CsvReader reader = new CsvReader(new StringReader(
+		try (CsvReader reader = new CsvReader(new StringReader(
 				"シンボル,名称,価格,出来高,日付\r\n" +
-				"GCQ09,COMEX 金 2009年08月限,1058.70,10,2008/08/06\r\n" +
-				"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
-				"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
-				"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n" +
-				"GCZ09,COMEX 金 2009年12月限,1098.70,13,2008/12/06\r\n"
-			), cfg);
-		try {
-			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class)
-				.column("シンボル", "symbol")
-				.column("名称", "name")
-				.column("価格", "price")
-				.column("出来高", "volume")
-				.column("日付", "date", new SimpleDateFormat("yyyy/MM/dd"))
-				.filter(new SimpleCsvNamedValueFilter().ne(0, "gcu09", true))
-				.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
-				.offset(1).limit(1)
-				.load(reader);
+						"GCQ09,COMEX 金 2009年08月限,1058.70,10,2008/08/06\r\n" +
+						"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
+						"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
+						"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n" +
+						"GCZ09,COMEX 金 2009年12月限,1098.70,13,2008/12/06\r\n"
+		), cfg)) {
+			final List<SampleBean> list = new ColumnNameMappingBeanListHandler<>(SampleBean.class)
+					.column("シンボル", "symbol")
+					.column("名称", "name")
+					.column("価格", "price")
+					.column("出来高", "volume")
+					.column("日付", "date", new SimpleDateFormat("yyyy/MM/dd"))
+					.filter(new SimpleCsvNamedValueFilter().ne(0, "gcu09", true))
+					.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
+					.offset(1).limit(1)
+					.load(reader);
 
 			assertThat(list.size(), is(1));
 			final SampleBean o1 = list.get(0);
@@ -284,8 +262,6 @@ public class ColumnNameMappingBeanListHandlerTest {
 			assertThat(o1.price.doubleValue(), is(1078.70D));
 			assertThat(o1.volume.longValue(), is(11L));
 			assertThat(o1.date, is(df.parse("2008/10/06")));
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -294,26 +270,23 @@ public class ColumnNameMappingBeanListHandlerTest {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 		df.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
 
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, df.parse("2009/10/28")));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
 			final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			format.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
 
-			new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class)
-				.column("symbol", "symbol")
-				.column("name", "name")
-				.column("price", "price")
-				.column("volume", "volume")
-				.column("date", "date", format)
-				.header(false)
-				.save(list, writer);
-		} finally {
-			writer.close();
+			new ColumnNameMappingBeanListHandler<>(SampleBean.class)
+					.column("symbol", "symbol")
+					.column("name", "name")
+					.column("price", "price")
+					.column("volume", "volume")
+					.column("date", "date", format)
+					.header(false)
+					.save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("AAAA,aaa,10000,10,2009-10-28\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
@@ -323,107 +296,92 @@ public class ColumnNameMappingBeanListHandlerTest {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 		df.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
 
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, df.parse("2009/10/28")));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
 			final DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			format.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
 
-			new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class)
-				.column("symbol", "symbol")
-				.column("name", "name")
-				.column("price", "price")
-				.column("volume", "volume")
-				.column("date", "date", format)
-				.save(list, writer);
-		} finally {
-			writer.close();
+			new ColumnNameMappingBeanListHandler<>(SampleBean.class)
+					.column("symbol", "symbol")
+					.column("name", "name")
+					.column("price", "price")
+					.column("volume", "volume")
+					.column("date", "date", format)
+					.save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,2009-10-28\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
 
 	@Test
 	public void testSave2() throws IOException {
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, null));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class)
-				.column("シンボル", "symbol")
-				.column("名称",     "name")
-				.column("価格",     "price")
-				.column("出来高",   "volume")
-				.save(list, writer);
-		} finally {
-			writer.close();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			new ColumnNameMappingBeanListHandler<>(SampleBean.class)
+					.column("シンボル", "symbol")
+					.column("名称", "name")
+					.column("価格", "price")
+					.column("出来高", "volume")
+					.save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("シンボル,名称,価格,出来高\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0\r\n"));
 	}
 
 	@Test
 	public void testSave3() throws IOException {
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, null));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class)
-				.column("シンボル", "symbol")
-				.column("価格",     "price")
-				.column("出来高",   "volume")
-				.save(list, writer);
-		} finally {
-			writer.close();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			new ColumnNameMappingBeanListHandler<>(SampleBean.class)
+					.column("シンボル", "symbol")
+					.column("価格", "price")
+					.column("出来高", "volume")
+					.save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("シンボル,価格,出来高\r\nAAAA,10000,10\r\nBBBB,NULL,0\r\n"));
 	}
 
 	@Test
 	public void testSave4() throws IOException {
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, null));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			final Map<String, String> columnMapping = new LinkedHashMap<String, String>();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			final Map<String, String> columnMapping = new LinkedHashMap<>();
 			columnMapping.put("シンボル", "symbol");
-			columnMapping.put("名称",     "name");
-			columnMapping.put("価格",     "price");
-			columnMapping.put("出来高",   "volume");
-			new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class).columnMapping(columnMapping).save(list, writer);
-		} finally {
-			writer.close();
+			columnMapping.put("名称", "name");
+			columnMapping.put("価格", "price");
+			columnMapping.put("出来高", "volume");
+			new ColumnNameMappingBeanListHandler<>(SampleBean.class).columnMapping(columnMapping).save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("シンボル,名称,価格,出来高\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0\r\n"));
 	}
 
 	@Test
 	public void testSave5() throws IOException {
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, null));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			final Map<String, String> columnMapping = new LinkedHashMap<String, String>();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			final Map<String, String> columnMapping = new LinkedHashMap<>();
 			columnMapping.put("シンボル", "symbol");
-			columnMapping.put("価格",     "price");
-			columnMapping.put("出来高",   "volume");
-			new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class).columnMapping(columnMapping).save(list, writer);
-		} finally {
-			writer.close();
+			columnMapping.put("価格", "price");
+			columnMapping.put("出来高", "volume");
+			new ColumnNameMappingBeanListHandler<>(SampleBean.class).columnMapping(columnMapping).save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("シンボル,価格,出来高\r\nAAAA,10000,10\r\nBBBB,NULL,0\r\n"));
 	}
@@ -432,24 +390,21 @@ public class ColumnNameMappingBeanListHandlerTest {
 	public void testSave6() throws Exception {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, df.parse("2008/10/28 10:24:00")));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 		list.add(new SampleBean("CCCC", "ccc", 20000, 100, df.parse("2008/10/26 14:20:10")));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class)
-				.column("シンボル", "symbol")
-				.column("名称",     "name")
-				.column("価格",     "price", new DecimalFormat("#,##0"))
-				.column("出来高",   "volume")
-				.column("日付",     "date", new SimpleDateFormat("yyyy/MM/dd"))
-				.column("時刻",     "date", new SimpleDateFormat("HH:mm:ss"))
-				.save(list, writer);
-		} finally {
-			writer.close();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			new ColumnNameMappingBeanListHandler<>(SampleBean.class)
+					.column("シンボル", "symbol")
+					.column("名称", "name")
+					.column("価格", "price", new DecimalFormat("#,##0"))
+					.column("出来高", "volume")
+					.column("日付", "date", new SimpleDateFormat("yyyy/MM/dd"))
+					.column("時刻", "date", new SimpleDateFormat("HH:mm:ss"))
+					.save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("シンボル,名称,価格,出来高,日付,時刻\r\nAAAA,aaa,10\\,000,10,2008/10/28,10:24:00\r\nBBBB,bbb,NULL,0,NULL,NULL\r\nCCCC,ccc,20\\,000,100,2008/10/26,14:20:10\r\n"));
 	}
@@ -458,25 +413,22 @@ public class ColumnNameMappingBeanListHandlerTest {
 	public void testSaveFilter() throws Exception {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("GCU09", "COMEX 金 2009年09月限", 1068.70, 10, df.parse("2008/09/06")));
 		list.add(new SampleBean("GCV09", "COMEX 金 2009年10月限", 1078.70, 11, df.parse("2008/10/06")));
 		list.add(new SampleBean("GCX09", "COMEX 金 2009年11月限", 1088.70, 12, df.parse("2008/11/06")));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			new ColumnNameMappingBeanListHandler<SampleBean>(SampleBean.class)
-				.column("シンボル", "symbol")
-				.column("名称",     "name")
-				.column("価格",     "price", new DecimalFormat("0.00"))
-				.column("出来高",   "volume")
-				.column("日付",     "date", new SimpleDateFormat("yyyy/MM/dd"))
-				.filter(new SimpleCsvNamedValueFilter().ne("シンボル", "gcu09", true))
-				.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
-				.save(list, writer);
-		} finally {
-			writer.close();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			new ColumnNameMappingBeanListHandler<>(SampleBean.class)
+					.column("シンボル", "symbol")
+					.column("名称", "name")
+					.column("価格", "price", new DecimalFormat("0.00"))
+					.column("出来高", "volume")
+					.column("日付", "date", new SimpleDateFormat("yyyy/MM/dd"))
+					.filter(new SimpleCsvNamedValueFilter().ne("シンボル", "gcu09", true))
+					.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
+					.save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("シンボル,名称,価格,出来高,日付\r\nGCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n"));
 	}

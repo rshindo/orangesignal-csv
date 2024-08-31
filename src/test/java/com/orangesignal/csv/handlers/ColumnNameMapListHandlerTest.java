@@ -59,8 +59,7 @@ public class ColumnNameMapListHandlerTest {
 
 	@Test
 	public void testLoad1() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
 			final List<Map<String, String>> list = new ColumnNameMapListHandler().load(reader);
 			assertThat(list.size(), is(2));
 			final Map<String, String> m1 = list.get(0);
@@ -74,15 +73,12 @@ public class ColumnNameMapListHandlerTest {
 			assertTrue(m2.containsKey("price"));
 			assertNull(m2.get("price"));
 			assertThat(m2.get("volume"), is("0"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoadOffsetLimit() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
 			final List<Map<String, String>> list = new ColumnNameMapListHandler().offset(1).limit(1).load(reader);
 
 			assertThat(list.size(), is(1));
@@ -92,22 +88,19 @@ public class ColumnNameMapListHandlerTest {
 			assertTrue(m2.containsKey("price"));
 			assertNull(m2.get("price"));
 			assertThat(m2.get("volume"), is("0"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad2() throws IOException {
 		cfg.setSkipLines(1);
-		final CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
 			final List<Map<String, String>> list = new ColumnNameMapListHandler()
-				.addColumn("symbol")
-				.addColumn("name")
-				.addColumn("price")
-				.addColumn("volume")
-				.load(reader);
+					.addColumn("symbol")
+					.addColumn("name")
+					.addColumn("price")
+					.addColumn("volume")
+					.load(reader);
 
 			assertThat(list.size(), is(2));
 			final Map<String, String> m1 = list.get(0);
@@ -121,24 +114,21 @@ public class ColumnNameMapListHandlerTest {
 			assertTrue(m2.containsKey("price"));
 			assertNull(m2.get("price"));
 			assertThat(m2.get("volume"), is("0"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoadFilter() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader(
+		try (CsvReader reader = new CsvReader(new StringReader(
 				"symbol,name,price,volume,date\r\n" +
-				"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
-				"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
-				"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"
-			), cfg);
-		try {
+						"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
+						"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
+						"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"
+		), cfg)) {
 			final List<Map<String, String>> list = new ColumnNameMapListHandler()
-				.filter(new SimpleCsvNamedValueFilter().ne(0, "gcu09", true))
-				.offset(1).limit(1)
-				.load(reader);
+					.filter(new SimpleCsvNamedValueFilter().ne(0, "gcu09", true))
+					.offset(1).limit(1)
+					.load(reader);
 
 			assertThat(list.size(), is(1));
 			final Map<String, String> m2 = list.get(0);
@@ -147,21 +137,19 @@ public class ColumnNameMapListHandlerTest {
 			assertThat(m2.get("price"), is("1088.70"));
 			assertThat(m2.get("volume"), is("12"));
 			assertThat(m2.get("date"), is("2008/11/06"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testSaveNoHeader() throws IOException {
-		final List<Map<String, String>> list = new ArrayList<Map<String, String>>(3);
-		final Map<String, String> m1 = new LinkedHashMap<String, String>(4);
+		final List<Map<String, String>> list = new ArrayList<>(3);
+		final Map<String, String> m1 = new LinkedHashMap<>(4);
 		m1.put("symbol", "AAAA");
 		m1.put("name", "aaa");
 		m1.put("price", "10000");
 		m1.put("volume", "10");
 		list.add(m1);
-		final Map<String, String> m2 = new LinkedHashMap<String, String>(4);
+		final Map<String, String> m2 = new LinkedHashMap<>(4);
 		m2.put("symbol", "BBBB");
 		m2.put("name", "bbb");
 		m2.put("price", null);
@@ -169,25 +157,22 @@ public class ColumnNameMapListHandlerTest {
 		list.add(m2);
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
 			new ColumnNameMapListHandler().header(false).save(list, writer);
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("AAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0\r\n"));
 	}
 
 	@Test
 	public void testSave1() throws IOException {
-		final List<Map<String, String>> list = new ArrayList<Map<String, String>>(3);
-		final Map<String, String> m1 = new LinkedHashMap<String, String>(4);
+		final List<Map<String, String>> list = new ArrayList<>(3);
+		final Map<String, String> m1 = new LinkedHashMap<>(4);
 		m1.put("symbol", "AAAA");
 		m1.put("name", "aaa");
 		m1.put("price", "10000");
 		m1.put("volume", "10");
 		list.add(m1);
-		final Map<String, String> m2 = new LinkedHashMap<String, String>(4);
+		final Map<String, String> m2 = new LinkedHashMap<>(4);
 		m2.put("symbol", "BBBB");
 		m2.put("name", "bbb");
 		m2.put("price", null);
@@ -195,25 +180,22 @@ public class ColumnNameMapListHandlerTest {
 		list.add(m2);
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
 			new ColumnNameMapListHandler().save(list, writer);
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0\r\n"));
 	}
 
 	@Test
 	public void testSave2() throws IOException {
-		final List<Map<String, String>> list = new ArrayList<Map<String, String>>(3);
-		final Map<String, String> m1 = new LinkedHashMap<String, String>(4);
+		final List<Map<String, String>> list = new ArrayList<>(3);
+		final Map<String, String> m1 = new LinkedHashMap<>(4);
 		m1.put("symbol", "AAAA");
 		m1.put("name", "aaa");
 //		m1.put("price", "10000");
 		m1.put("volume", "10");
 		list.add(m1);
-		final Map<String, String> m2 = new LinkedHashMap<String, String>(4);
+		final Map<String, String> m2 = new LinkedHashMap<>(4);
 		m2.put("symbol", "BBBB");
 		m2.put("name", "bbb");
 //		m2.put("price", null);
@@ -221,38 +203,35 @@ public class ColumnNameMapListHandlerTest {
 		list.add(m2);
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
 			new ColumnNameMapListHandler()
-				.addColumn("symbol")
-				.addColumn("name")
-				.addColumn("price")
-				.addColumn("volume")
-				.save(list, writer);
-		} finally {
-			writer.close();
+					.addColumn("symbol")
+					.addColumn("name")
+					.addColumn("price")
+					.addColumn("volume")
+					.save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume\r\nAAAA,aaa,NULL,10\r\nBBBB,bbb,NULL,0\r\n"));
 	}
 
 	@Test
 	public void testSaveFilter() throws Exception {
-		final List<Map<String, String>> list = new ArrayList<Map<String, String>>(3);
-		final Map<String, String> m0 = new LinkedHashMap<String, String>(5);
+		final List<Map<String, String>> list = new ArrayList<>(3);
+		final Map<String, String> m0 = new LinkedHashMap<>(5);
 		m0.put("symbol", "GCU09");
 		m0.put("name", "COMEX 金 2009年09月限");
 		m0.put("price", "1068.70");
 		m0.put("volume", "10");
 		m0.put("date", "2008/09/06");
 		list.add(m0);
-		final Map<String, String> m1 = new LinkedHashMap<String, String>(5);
+		final Map<String, String> m1 = new LinkedHashMap<>(5);
 		m1.put("symbol", "GCV09");
 		m1.put("name", "COMEX 金 2009年10月限");
 		m1.put("price", "1078.70");
 		m1.put("volume", "11");
 		m1.put("date", "2008/10/06");
 		list.add(m1);
-		final Map<String, String> m2 = new LinkedHashMap<String, String>(5);
+		final Map<String, String> m2 = new LinkedHashMap<>(5);
 		m2.put("symbol", "GCX09");
 		m2.put("name", "COMEX 金 2009年11月限");
 		m2.put("price", "1088.70");
@@ -261,13 +240,10 @@ public class ColumnNameMapListHandlerTest {
 		list.add(m2);
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
 			new ColumnNameMapListHandler()
-				.filter(new SimpleCsvNamedValueFilter().ne("symbol", "gcu09", true))
-				.save(list, writer);
-		} finally {
-			writer.close();
+					.filter(new SimpleCsvNamedValueFilter().ne("symbol", "gcu09", true))
+					.save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nGCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\nGCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"));
 	}

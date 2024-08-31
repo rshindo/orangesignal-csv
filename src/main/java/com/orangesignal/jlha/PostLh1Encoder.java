@@ -82,7 +82,7 @@ public class PostLh1Encoder implements PostLzssEncoder {
 			offHiLen = createLenList();
 			try {
 				offHiCode = StaticHuffman.LenListToCodeList(offHiLen);
-			} catch (final BadHuffmanTableException exception) {
+			} catch (final BadHuffmanTableException ignored) {
 			}
 		} else {
 			throw new NullPointerException("out");

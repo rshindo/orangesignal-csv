@@ -54,7 +54,7 @@ public class CsvBeanTemplate<T> extends AbstractCsvBeanTemplate<T, CsvBeanTempla
 	 * @throws IllegalArgumentException {@code type} が {@code null} の場合。
 	 */
 	public static <T> CsvBeanTemplate<T> newInstance(final Class<T> type) {
-		return new CsvBeanTemplate<T>(type);
+		return new CsvBeanTemplate<>(type);
 	}
 
 	// -----------------------------------------------------------------------

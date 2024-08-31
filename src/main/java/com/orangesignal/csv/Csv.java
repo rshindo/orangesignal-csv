@@ -168,7 +168,7 @@ public abstract class Csv {
 	 * @since 1.2.1
 	 */
 	public static <T> List<T> load(final LhaInputStream in, final String encoding, final CsvConfig cfg, final CsvListHandler<T> handler, final LhaEntryFilter filter) throws IOException {
-		final List<T> list = new ArrayList<T>();
+		final List<T> list = new ArrayList<>();
 		LhaHeader entry;
 		while ((entry = in.getNextEntry()) != null) {
 			try {
@@ -211,7 +211,7 @@ public abstract class Csv {
 	 * @throws IOException 入出力エラーが発生した場合
 	 */
 	public static <T> List<T> load(final LhaInputStream in, final CsvConfig cfg, final CsvListHandler<T> handler, final LhaEntryFilter filter) throws IOException {
-		final List<T> list = new ArrayList<T>();
+		final List<T> list = new ArrayList<>();
 		LhaHeader entry;
 		while ((entry = in.getNextEntry()) != null) {
 			try {
@@ -254,7 +254,7 @@ public abstract class Csv {
 	 * @since 1.2.1
 	 */
 	public static <T> List<T> load(final LhaFile lhaFile, final String encoding, final CsvConfig cfg, final CsvListHandler<T> handler, final LhaEntryFilter filter) throws IOException {
-		final List<T> list = new ArrayList<T>();
+		final List<T> list = new ArrayList<>();
 		final LhaHeader[] entries = lhaFile.getEntries();
 		for (final LhaHeader entry : entries) {
 			if (filter != null && !filter.accept(entry)) {
@@ -293,7 +293,7 @@ public abstract class Csv {
 	 * @throws IOException 入出力エラーが発生した場合
 	 */
 	public static <T> List<T> load(final LhaFile lhaFile, final CsvConfig cfg, final CsvListHandler<T> handler, final LhaEntryFilter filter) throws IOException {
-		final List<T> list = new ArrayList<T>();
+		final List<T> list = new ArrayList<>();
 		final LhaHeader[] entries = lhaFile.getEntries();
 		for (final LhaHeader entry : entries) {
 			if (filter != null && !filter.accept(entry)) {
@@ -332,7 +332,7 @@ public abstract class Csv {
 	 * @since 1.2.1
 	 */
 	public static <T> List<T> load(final ZipInputStream in, final String encoding, final CsvConfig cfg, final CsvListHandler<T> handler, final ZipEntryFilter filter) throws IOException {
-		final List<T> list = new ArrayList<T>();
+		final List<T> list = new ArrayList<>();
 		ZipEntry entry;
 		while ((entry = in.getNextEntry()) != null) {
 			try {
@@ -375,7 +375,7 @@ public abstract class Csv {
 	 * @throws IOException 入出力エラーが発生した場合
 	 */
 	public static <T> List<T> load(final ZipInputStream in, final CsvConfig cfg, final CsvListHandler<T> handler, final ZipEntryFilter filter) throws IOException {
-		final List<T> list = new ArrayList<T>();
+		final List<T> list = new ArrayList<>();
 		ZipEntry entry;
 		while ((entry = in.getNextEntry()) != null) {
 			try {
@@ -418,7 +418,7 @@ public abstract class Csv {
 	 * @since 1.2.1
 	 */
 	public static <T> List<T> load(final ZipFile zipFile, final String encoding, final CsvConfig cfg, final CsvListHandler<T> handler, final ZipEntryFilter filter) throws IOException {
-		final List<T> list = new ArrayList<T>();
+		final List<T> list = new ArrayList<>();
 		final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		while (entries.hasMoreElements()) {
 			final ZipEntry entry = entries.nextElement();
@@ -463,7 +463,7 @@ public abstract class Csv {
 	 * @throws IOException 入出力エラーが発生した場合
 	 */
 	public static <T> List<T> load(final ZipFile zipFile, final CsvConfig cfg, final CsvListHandler<T> handler, final ZipEntryFilter filter) throws IOException {
-		final List<T> list = new ArrayList<T>();
+		final List<T> list = new ArrayList<>();
 		final Enumeration<? extends ZipEntry> entries = zipFile.entries();
 		while (entries.hasMoreElements()) {
 			final ZipEntry entry = entries.nextElement();

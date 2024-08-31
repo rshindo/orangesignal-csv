@@ -75,7 +75,7 @@ public class CsvColumnNameMappingBeanWriter<T> implements Closeable, Flushable {
 	 * @throws IllegalArgumentException {@code writer} または {@code type} が {@code null} の場合。
 	 */
 	public static <T> CsvColumnNameMappingBeanWriter<T> newInstance(final CsvWriter writer, final Class<T> type) {
-		return new CsvColumnNameMappingBeanWriter<T>(writer, type);
+		return new CsvColumnNameMappingBeanWriter<>(writer, type);
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class CsvColumnNameMappingBeanWriter<T> implements Closeable, Flushable {
 	 * @since 2.1
 	 */
 	public static <T> CsvColumnNameMappingBeanWriter<T> newInstance(final CsvWriter writer, final Class<T> type, final boolean header) {
-		return new CsvColumnNameMappingBeanWriter<T>(writer, type, header);
+		return new CsvColumnNameMappingBeanWriter<>(writer, type, header);
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class CsvColumnNameMappingBeanWriter<T> implements Closeable, Flushable {
 	 * @throws IllegalArgumentException {@code writer} または {@code template} が {@code null} の場合。
 	 */
 	public static <T> CsvColumnNameMappingBeanWriter<T> newInstance(final CsvWriter writer, final CsvColumnNameMappingBeanTemplate<T> template) {
-		return new CsvColumnNameMappingBeanWriter<T>(writer, template);
+		return new CsvColumnNameMappingBeanWriter<>(writer, template);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class CsvColumnNameMappingBeanWriter<T> implements Closeable, Flushable {
 	 * @since 2.1
 	 */
 	public static <T> CsvColumnNameMappingBeanWriter<T> newInstance(final CsvWriter writer, final CsvColumnNameMappingBeanTemplate<T> template, final boolean header) {
-		return new CsvColumnNameMappingBeanWriter<T>(writer, template, header);
+		return new CsvColumnNameMappingBeanWriter<>(writer, template, header);
 	}
 
 	// ------------------------------------------------------------------------
@@ -132,7 +132,7 @@ public class CsvColumnNameMappingBeanWriter<T> implements Closeable, Flushable {
 	 * @throws IllegalArgumentException {@code writer} または {@code type} が {@code null} の場合。
 	 */
 	public CsvColumnNameMappingBeanWriter(final CsvWriter writer, final Class<T> type) {
-		this(writer, new CsvColumnNameMappingBeanTemplate<T>(type), true);
+		this(writer, new CsvColumnNameMappingBeanTemplate<>(type), true);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class CsvColumnNameMappingBeanWriter<T> implements Closeable, Flushable {
 	 * @since 2.1
 	 */
 	public CsvColumnNameMappingBeanWriter(final CsvWriter writer, final Class<T> type, final boolean header) {
-		this(writer, new CsvColumnNameMappingBeanTemplate<T>(type), header);
+		this(writer, new CsvColumnNameMappingBeanTemplate<>(type), header);
 	}
 
 	/**

@@ -66,7 +66,7 @@ public class ColumnNameMapListHandler extends AbstractCsvListHandler<Map<String,
 	 */
 	public ColumnNameMapListHandler addColumn(final String columnName) {
 		if (columnNames == null) {
-			columnNames = new ArrayList<String>();
+			columnNames = new ArrayList<>();
 		}
 		columnNames.add(columnName);
 		return this;
@@ -79,7 +79,7 @@ public class ColumnNameMapListHandler extends AbstractCsvListHandler<Map<String,
 	 * @return このオブジェクトへの参照
 	 */
 	public ColumnNameMapListHandler columnNames(final Collection<String> columnNames) {
-		this.columnNames = new ArrayList<String>(columnNames);
+		this.columnNames = new ArrayList<>(columnNames);
 		return this;
 	}
 
@@ -114,7 +114,7 @@ public class ColumnNameMapListHandler extends AbstractCsvListHandler<Map<String,
 		r.setFilter(valueFilter);
 
 		// データ部を処理します。
-		final List<Map<String, String>> results = new ArrayList<Map<String, String>>();
+		final List<Map<String, String>> results = new ArrayList<>();
 		int offset = 0;
 
 		List<String> values;

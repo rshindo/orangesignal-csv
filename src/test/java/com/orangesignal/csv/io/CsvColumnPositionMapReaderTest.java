@@ -90,8 +90,7 @@ public class CsvColumnPositionMapReaderTest {
 	@Test
 	public void testRead1() throws IOException {
 		cfg.setSkipLines(1);	// ヘッダは不要なので読飛ばす指定をする
-		final CsvColumnPositionMapReader reader = new CsvColumnPositionMapReader(new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg));
-		try {
+		try (CsvColumnPositionMapReader reader = new CsvColumnPositionMapReader(new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg))) {
 			final Map<Integer, String> m1 = reader.read();
 			assertThat(m1.get(0), is("AAAA"));
 			assertThat(m1.get(1), is("aaa"));
@@ -107,20 +106,18 @@ public class CsvColumnPositionMapReaderTest {
 
 			final Map<Integer, String> last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testReadFilter() throws IOException {
-		final CsvColumnPositionMapReader reader = new CsvColumnPositionMapReader(new CsvReader(new StringReader(
+		//				"symbol,name,price,volume,date\r\n" +
+		try (CsvColumnPositionMapReader reader = new CsvColumnPositionMapReader(new CsvReader(new StringReader(
 //				"symbol,name,price,volume,date\r\n" +
 				"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
-				"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
-				"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"
-			), cfg));
-		try {
+						"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
+						"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"
+		), cfg))) {
 			reader.setFilter(new SimpleCsvValueFilter().ne(0, "gcu09", true));
 
 			final Map<Integer, String> m1 = reader.read();
@@ -139,8 +136,6 @@ public class CsvColumnPositionMapReaderTest {
 
 			final Map<Integer, String> last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -158,7 +153,7 @@ public class CsvColumnPositionMapReaderTest {
 				"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
 				"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"
 			), cfg));
-		try {
+		try (reader) {
 			reader.setFilter(filter);
 			assertEquals(filter, reader.getFilter());
 
@@ -184,8 +179,6 @@ public class CsvColumnPositionMapReaderTest {
 			assertNull(last);
 
 			assertEquals(filter, reader.getFilter());
-		} finally {
-			reader.close();
 		}
 
 		assertEquals(filter, reader.getFilter());

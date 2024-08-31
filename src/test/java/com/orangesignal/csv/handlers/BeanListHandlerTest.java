@@ -70,46 +70,45 @@ public class BeanListHandlerTest {
 
 	@Test
 	public void testGetType() {
-		assertThat(new BeanListHandler<SampleBean>(SampleBean.class).getType().getName(), is(SampleBean.class.getName()));
+		assertThat(new BeanListHandler<>(SampleBean.class).getType().getName(), is(SampleBean.class.getName()));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testValueParserMappingIllegalArgumentException() {
-		new BeanListHandler<SampleBean>(SampleBean.class).valueParserMapping(null);
+		new BeanListHandler<>(SampleBean.class).valueParserMapping(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testValueFormatterMappingIllegalArgumentException() {
-		new BeanListHandler<SampleBean>(SampleBean.class).valueFormatterMapping(null);
+		new BeanListHandler<>(SampleBean.class).valueFormatterMapping(null);
 	}
 
 	@Test
 	public void testValueConverter() {
-		new BeanListHandler<SampleBean>(SampleBean.class).valueConverter(new NullCsvValueConverter());
+		new BeanListHandler<>(SampleBean.class).valueConverter(new NullCsvValueConverter());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testValueConverterIllegalArgumentException() {
-		new BeanListHandler<SampleBean>(SampleBean.class).valueConverter(null);
+		new BeanListHandler<>(SampleBean.class).valueConverter(null);
 	}
 
 
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testIncludesIllegalArgumentException() {
-		new BeanListHandler<SampleBean>(SampleBean.class).excludes("aaa").includes("bbb");
+		new BeanListHandler<>(SampleBean.class).excludes("aaa").includes("bbb");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testExcludesIllegalArgumentException() {
-		new BeanListHandler<SampleBean>(SampleBean.class).includes("aaa").excludes("bbb");
+		new BeanListHandler<>(SampleBean.class).includes("aaa").excludes("bbb");
 	}
 
 	@Test
 	public void testLoad1() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
-			final List<SampleBean> list = new BeanListHandler<SampleBean>(SampleBean.class).load(reader);
+		try (CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
+			final List<SampleBean> list = new BeanListHandler<>(SampleBean.class).load(reader);
 			assertThat(list.size(), is(2));
 			final SampleBean o1 = list.get(0);
 			assertThat(o1.symbol, is("AAAA"));
@@ -121,16 +120,13 @@ public class BeanListHandlerTest {
 			assertThat(o2.name, is("bbb"));
 			assertNull(o2.price);
 			assertThat(o2.volume.longValue(), is(0L));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad2() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
-			final List<SampleBean> list = new BeanListHandler<SampleBean>(SampleBean.class).includes("name").load(reader);
+		try (CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
+			final List<SampleBean> list = new BeanListHandler<>(SampleBean.class).includes("name").load(reader);
 			assertThat(list.size(), is(2));
 			final SampleBean o1 = list.get(0);
 			assertNull(o1.symbol);
@@ -142,16 +138,13 @@ public class BeanListHandlerTest {
 			assertThat(o2.name, is("bbb"));
 			assertNull(o2.price);
 			assertNull(o2.volume);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad3() throws IOException {
-		final CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg);
-		try {
-			final List<SampleBean> list = new BeanListHandler<SampleBean>(SampleBean.class).excludes("name").load(reader);
+		try (CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg)) {
+			final List<SampleBean> list = new BeanListHandler<>(SampleBean.class).excludes("name").load(reader);
 			assertThat(list.size(), is(2));
 			final SampleBean o1 = list.get(0);
 			assertThat(o1.symbol, is("AAAA"));
@@ -163,20 +156,17 @@ public class BeanListHandlerTest {
 			assertNull(o2.name);
 			assertNull(o2.price);
 			assertThat(o2.volume.longValue(), is(0L));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad4() throws Exception {
-		final CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume,date\r\nAAAA,aaa,10\\,000,10,2008/10/28\r\nBBBB,bbb,NULL,0,NULL"), cfg);
-		try {
-			final List<SampleBean> list = new BeanListHandler<SampleBean>(SampleBean.class)
-				.excludes("name")
-				.format("price", new DecimalFormat("#,##0"))
-				.format("date", new SimpleDateFormat("yyyy/MM/dd"))
-				.load(reader);
+		try (CsvReader reader = new CsvReader(new StringReader("symbol,name,price,volume,date\r\nAAAA,aaa,10\\,000,10,2008/10/28\r\nBBBB,bbb,NULL,0,NULL"), cfg)) {
+			final List<SampleBean> list = new BeanListHandler<>(SampleBean.class)
+					.excludes("name")
+					.format("price", new DecimalFormat("#,##0"))
+					.format("date", new SimpleDateFormat("yyyy/MM/dd"))
+					.load(reader);
 
 			assertThat(list.size(), is(2));
 			final SampleBean o1 = list.get(0);
@@ -191,48 +181,42 @@ public class BeanListHandlerTest {
 			assertNull(o2.price);
 			assertThat(o2.volume.longValue(), is(0L));
 			assertNull(o2.date);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoadOffsetLimit() throws Exception {
-		final CsvReader reader = new CsvReader(new StringReader("name\nA\nB\nC\nD\nE\nF\nG"), cfg);
-		try {
-			final List<SampleBean> list = new BeanListHandler<SampleBean>(SampleBean.class)
-				.includes("name")
-				.offset(2)
-				.limit(3)
-				.load(reader);
+		try (CsvReader reader = new CsvReader(new StringReader("name\nA\nB\nC\nD\nE\nF\nG"), cfg)) {
+			final List<SampleBean> list = new BeanListHandler<>(SampleBean.class)
+					.includes("name")
+					.offset(2)
+					.limit(3)
+					.load(reader);
 
 			assertThat(list.size(), is(3));
 			assertThat(list.get(0).name, is("C"));
 			assertThat(list.get(1).name, is("D"));
 			assertThat(list.get(2).name, is("E"));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoadFilter() throws Exception {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-		final CsvReader reader = new CsvReader(new StringReader(
+		try (CsvReader reader = new CsvReader(new StringReader(
 				"symbol,name,price,volume,date\r\n" +
-				"GCQ09,COMEX 金 2009年08月限,1058.70,10,2008/08/06\r\n" +
-				"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
-				"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
-				"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n" +
-				"GCZ09,COMEX 金 2009年12月限,1098.70,13,2008/12/06\r\n"
-			), cfg);
-		try {
-			final List<SampleBean> list = new BeanListHandler<SampleBean>(SampleBean.class)
-				.format("date", new SimpleDateFormat("yyyy/MM/dd"))
-				.filter(new SimpleCsvNamedValueFilter().ne("symbol", "gcu09", true))
-				.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
-				.offset(1).limit(1)
-				.load(reader);
+						"GCQ09,COMEX 金 2009年08月限,1058.70,10,2008/08/06\r\n" +
+						"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
+						"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
+						"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n" +
+						"GCZ09,COMEX 金 2009年12月限,1098.70,13,2008/12/06\r\n"
+		), cfg)) {
+			final List<SampleBean> list = new BeanListHandler<>(SampleBean.class)
+					.format("date", new SimpleDateFormat("yyyy/MM/dd"))
+					.filter(new SimpleCsvNamedValueFilter().ne("symbol", "gcu09", true))
+					.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
+					.offset(1).limit(1)
+					.load(reader);
 
 			assertThat(list.size(), is(1));
 			final SampleBean o1 = list.get(0);
@@ -241,28 +225,25 @@ public class BeanListHandlerTest {
 			assertThat(o1.price.doubleValue(), is(1078.70D));
 			assertThat(o1.volume.longValue(), is(11L));
 			assertThat(o1.date, is(df.parse("2008/10/06")));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testSort() throws Exception {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-		final CsvReader reader = new CsvReader(new StringReader(
+		try (CsvReader reader = new CsvReader(new StringReader(
 				"symbol,name,price,volume,date\r\n" +
-				"GCQ09,COMEX 金 2009年08月限,1058.70,10,2008/08/06\r\n" +
-				"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
-				"GCV09,COMEX 金 2009年10月限,1088.70,11,2008/10/06\r\n" +
-				"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n" +
-				"GCZ09,COMEX 金 2009年12月限,1098.70,13,2008/12/06\r\n"
-			), cfg);
-		try {
-			final List<SampleBean> list = new BeanListHandler<SampleBean>(SampleBean.class)
-				.format("date", new SimpleDateFormat("yyyy/MM/dd"))
-				.order(BeanOrder.desc("price"), BeanOrder.asc("volume"))
-				.offset(1).limit(3)
-				.load(reader);
+						"GCQ09,COMEX 金 2009年08月限,1058.70,10,2008/08/06\r\n" +
+						"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
+						"GCV09,COMEX 金 2009年10月限,1088.70,11,2008/10/06\r\n" +
+						"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n" +
+						"GCZ09,COMEX 金 2009年12月限,1098.70,13,2008/12/06\r\n"
+		), cfg)) {
+			final List<SampleBean> list = new BeanListHandler<>(SampleBean.class)
+					.format("date", new SimpleDateFormat("yyyy/MM/dd"))
+					.order(BeanOrder.desc("price"), BeanOrder.asc("volume"))
+					.offset(1).limit(3)
+					.load(reader);
 
 			assertThat(list.size(), is(3));
 			final SampleBean o1 = list.get(0);
@@ -277,71 +258,57 @@ public class BeanListHandlerTest {
 			assertThat(o2.price.doubleValue(), is(1088.70D));
 			assertThat(o2.volume.longValue(), is(12L));
 			assertThat(o2.date, is(df.parse("2008/11/06")));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testSaveNoHeader() throws IOException {
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, null));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			new BeanListHandler<SampleBean>(SampleBean.class).header(false).save(list, writer);
-		} finally {
-			writer.close();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			new BeanListHandler<>(SampleBean.class).header(false).save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("AAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
 
 	@Test
 	public void testSave1() throws IOException {
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, null));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			new BeanListHandler<SampleBean>(SampleBean.class).save(list, writer);
-		} finally {
-			writer.close();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			new BeanListHandler<>(SampleBean.class).save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume,date\r\nAAAA,aaa,10000,10,NULL\r\nBBBB,bbb,NULL,0,NULL\r\n"));
 	}
 
 	@Test
 	public void testSave2() throws IOException {
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, null));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			new BeanListHandler<SampleBean>(SampleBean.class).includes("name").save(list, writer);
-		} finally {
-			writer.close();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			new BeanListHandler<>(SampleBean.class).includes("name").save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("name\r\naaa\r\nbbb\r\n"));
 	}
 
 	@Test
 	public void testSave3() throws IOException {
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, null));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			new BeanListHandler<SampleBean>(SampleBean.class).excludes("name", "date").save(list, writer);
-		} finally {
-			writer.close();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			new BeanListHandler<>(SampleBean.class).excludes("name", "date").save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,price,volume\r\nAAAA,10000,10\r\nBBBB,NULL,0\r\n"));
 	}
@@ -350,21 +317,18 @@ public class BeanListHandlerTest {
 	public void testSave4() throws Exception {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("AAAA", "aaa", 10000, 10, df.parse("2008/10/28")));
 		list.add(new SampleBean("BBBB", "bbb", null, 0, null));
 		list.add(new SampleBean("CCCC", "ccc", 20000, 100, df.parse("2008/10/26")));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			new BeanListHandler<SampleBean>(SampleBean.class)
-				.excludes("name")
-				.format("price", new DecimalFormat("#,##0"))
-				.format("date", new SimpleDateFormat("yyyy/MM/dd"))
-				.save(list, writer);
-		} finally {
-			writer.close();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			new BeanListHandler<>(SampleBean.class)
+					.excludes("name")
+					.format("price", new DecimalFormat("#,##0"))
+					.format("date", new SimpleDateFormat("yyyy/MM/dd"))
+					.save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,price,volume,date\r\nAAAA,10\\,000,10,2008/10/28\r\nBBBB,NULL,0,NULL\r\nCCCC,20\\,000,100,2008/10/26\r\n"));
 	}
@@ -373,23 +337,20 @@ public class BeanListHandlerTest {
 	public void testSaveFilter() throws Exception {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 
-		final List<SampleBean> list = new ArrayList<SampleBean>();
+		final List<SampleBean> list = new ArrayList<>();
 		list.add(new SampleBean("GCU09", "COMEX 金 2009年09月限", 1068.70, 10, df.parse("2008/09/06")));
 		list.add(new SampleBean("GCV09", "COMEX 金 2009年10月限", 1078.70, 11, df.parse("2008/10/06")));
 		list.add(new SampleBean("GCX09", "COMEX 金 2009年11月限", 1088.70, 12, df.parse("2008/11/06")));
 
 		final StringWriter sw = new StringWriter();
-		final CsvWriter writer = new CsvWriter(sw, cfg);
-		try {
-			new BeanListHandler<SampleBean>(SampleBean.class)
-				.excludes("name")
-				.format("price", new DecimalFormat("0.00"))
-				.format("date", new SimpleDateFormat("yyyy/MM/dd"))
-				.filter(new SimpleCsvNamedValueFilter().ne("symbol", "gcu09", true))
-				.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
-				.save(list, writer);
-		} finally {
-			writer.close();
+		try (CsvWriter writer = new CsvWriter(sw, cfg)) {
+			new BeanListHandler<>(SampleBean.class)
+					.excludes("name")
+					.format("price", new DecimalFormat("0.00"))
+					.format("date", new SimpleDateFormat("yyyy/MM/dd"))
+					.filter(new SimpleCsvNamedValueFilter().ne("symbol", "gcu09", true))
+					.filter(new SimpleBeanFilter().ne("date", df.parse("2008/11/06")))
+					.save(list, writer);
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,price,volume,date\r\nGCV09,1078.70,11,2008/10/06\r\n"));
 	}

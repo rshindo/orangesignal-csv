@@ -182,7 +182,7 @@ public class CsvResultSet implements ResultSet {
 		if (s == null) {
 			return 0;
 		}
-		return Byte.valueOf(s).byteValue();
+		return Byte.parseByte(s);
 	}
 
 	@Override
@@ -191,7 +191,7 @@ public class CsvResultSet implements ResultSet {
 		if (s == null) {
 			return 0;
 		}
-		return Short.valueOf(s).shortValue();
+		return Short.parseShort(s);
 	}
 
 	@Override
@@ -200,7 +200,7 @@ public class CsvResultSet implements ResultSet {
 		if (s == null) {
 			return 0;
 		}
-		return Integer.valueOf(s).intValue();
+		return Integer.parseInt(s);
 	}
 
 	@Override
@@ -209,7 +209,7 @@ public class CsvResultSet implements ResultSet {
 		if (s == null) {
 			return 0L;
 		}
-		return Long.valueOf(s).longValue();
+		return Long.parseLong(s);
 	}
 
 	@Override
@@ -218,7 +218,7 @@ public class CsvResultSet implements ResultSet {
 		if (s == null) {
 			return 0F;
 		}
-		return Float.valueOf(s).floatValue();
+		return Float.parseFloat(s);
 	}
 
 	@Override
@@ -227,7 +227,7 @@ public class CsvResultSet implements ResultSet {
 		if (s == null) {
 			return 0D;
 		}
-		return Double.valueOf(s).doubleValue();
+		return Double.parseDouble(s);
 	}
 
 	/**

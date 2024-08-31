@@ -78,11 +78,10 @@ public class CsvColumnPositionMapWriterTest {
 	@Test
 	public void testFlush() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvColumnPositionMapWriter writer = new CsvColumnPositionMapWriter(new CsvWriter(sw, cfg));
-		try {
+		try (CsvColumnPositionMapWriter writer = new CsvColumnPositionMapWriter(new CsvWriter(sw, cfg))) {
 			writer.setFilter(new SimpleCsvValueFilter().ne(0, "gcu09", true));
 
-			final Map<Integer, String> m0 = new HashMap<Integer, String>(5);
+			final Map<Integer, String> m0 = new HashMap<>(5);
 			m0.put(0, "GCU09");
 			m0.put(1, "COMEX 金 2009年09月限");
 			m0.put(2, "1068.70");
@@ -94,7 +93,7 @@ public class CsvColumnPositionMapWriterTest {
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is(""));
 
-			final Map<Integer, String> m1 = new HashMap<Integer, String>(5);
+			final Map<Integer, String> m1 = new HashMap<>(5);
 			m1.put(0, "GCV09");
 			m1.put(1, "COMEX 金 2009年10月限");
 			m1.put(2, "1078.70");
@@ -106,7 +105,7 @@ public class CsvColumnPositionMapWriterTest {
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n"));
 
-			final Map<Integer, String> m2 = new HashMap<Integer, String>(5);
+			final Map<Integer, String> m2 = new HashMap<>(5);
 			m2.put(0, "GCX09");
 			m2.put(1, "COMEX 金 2009年11月限");
 			m2.put(2, "1088.70");
@@ -117,8 +116,6 @@ public class CsvColumnPositionMapWriterTest {
 
 			writer.flush();
 			assertThat(sw.getBuffer().toString(), is("GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\nGCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"));
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\nGCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"));
 	}
@@ -149,9 +146,8 @@ public class CsvColumnPositionMapWriterTest {
 	@Test
 	public void testWrite1() throws IOException {
 		final StringWriter sw = new StringWriter();
-		final CsvColumnPositionMapWriter writer = new CsvColumnPositionMapWriter(new CsvWriter(sw, cfg));
-		try {
-			final Map<Integer, String> m0 = new HashMap<Integer, String>(4);
+		try (CsvColumnPositionMapWriter writer = new CsvColumnPositionMapWriter(new CsvWriter(sw, cfg))) {
+			final Map<Integer, String> m0 = new HashMap<>(4);
 			m0.put(0, "symbol");
 			m0.put(1, "name");
 			m0.put(2, "price");
@@ -159,7 +155,7 @@ public class CsvColumnPositionMapWriterTest {
 			final boolean r0 = writer.write(m0);
 			assertTrue(r0);
 
-			final Map<Integer, String> m1 = new HashMap<Integer, String>(4);
+			final Map<Integer, String> m1 = new HashMap<>(4);
 			m1.put(0, "AAAA");
 			m1.put(1, "aaa");
 			m1.put(2, "10000");
@@ -167,15 +163,13 @@ public class CsvColumnPositionMapWriterTest {
 			final boolean r1 = writer.write(m1);
 			assertTrue(r1);
 
-			final Map<Integer, String> m2 = new HashMap<Integer, String>(4);
+			final Map<Integer, String> m2 = new HashMap<>(4);
 			m2.put(0, "BBBB");
 			m2.put(1, "bbb");
 			m2.put(2, null);
 			m2.put(3, "0");
 			final boolean r2 = writer.write(m2);
 			assertTrue(r2);
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0\r\n"));
 	}
@@ -183,11 +177,10 @@ public class CsvColumnPositionMapWriterTest {
 	@Test
 	public void testWriteFilter() throws Exception {
 		final StringWriter sw = new StringWriter();
-		final CsvColumnPositionMapWriter writer = new CsvColumnPositionMapWriter(new CsvWriter(sw, cfg));
-		try {
+		try (CsvColumnPositionMapWriter writer = new CsvColumnPositionMapWriter(new CsvWriter(sw, cfg))) {
 			writer.setFilter(new SimpleCsvValueFilter().ne(0, "gcu09", true));
 
-			final Map<Integer, String> m0 = new HashMap<Integer, String>(5);
+			final Map<Integer, String> m0 = new HashMap<>(5);
 			m0.put(0, "GCU09");
 			m0.put(1, "COMEX 金 2009年09月限");
 			m0.put(2, "1068.70");
@@ -196,7 +189,7 @@ public class CsvColumnPositionMapWriterTest {
 			final boolean r0 = writer.write(m0);
 			assertFalse(r0);
 
-			final Map<Integer, String> m1 = new HashMap<Integer, String>(5);
+			final Map<Integer, String> m1 = new HashMap<>(5);
 			m1.put(0, "GCV09");
 			m1.put(1, "COMEX 金 2009年10月限");
 			m1.put(2, "1078.70");
@@ -205,7 +198,7 @@ public class CsvColumnPositionMapWriterTest {
 			final boolean r1 = writer.write(m1);
 			assertTrue(r1);
 
-			final Map<Integer, String> m2 = new HashMap<Integer, String>(5);
+			final Map<Integer, String> m2 = new HashMap<>(5);
 			m2.put(0, "GCX09");
 			m2.put(1, "COMEX 金 2009年11月限");
 			m2.put(2, "1088.70");
@@ -213,8 +206,6 @@ public class CsvColumnPositionMapWriterTest {
 			m2.put(4, "2008/11/06");
 			final boolean r2 = writer.write(m2);
 			assertTrue(r2);
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\nGCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"));
 	}
@@ -229,11 +220,11 @@ public class CsvColumnPositionMapWriterTest {
 
 		final StringWriter sw = new StringWriter();
 		final CsvColumnPositionMapWriter writer = new CsvColumnPositionMapWriter(new CsvWriter(sw, cfg));
-		try {
+		try (writer) {
 			writer.setFilter(filter);
 			assertEquals(filter, writer.getFilter());
 
-			final Map<Integer, String> m0 = new HashMap<Integer, String>(5);
+			final Map<Integer, String> m0 = new HashMap<>(5);
 			m0.put(0, "GCU09");
 			m0.put(1, "COMEX 金 2009年09月限");
 			m0.put(2, "1068.70");
@@ -244,7 +235,7 @@ public class CsvColumnPositionMapWriterTest {
 
 			assertEquals(filter, writer.getFilter());
 
-			final Map<Integer, String> m1 = new HashMap<Integer, String>(5);
+			final Map<Integer, String> m1 = new HashMap<>(5);
 			m1.put(0, "GCV09");
 			m1.put(1, "COMEX 金 2009年10月限");
 			m1.put(2, "1078.70");
@@ -255,7 +246,7 @@ public class CsvColumnPositionMapWriterTest {
 
 			assertEquals(filter, writer.getFilter());
 
-			final Map<Integer, String> m2 = new HashMap<Integer, String>(5);
+			final Map<Integer, String> m2 = new HashMap<>(5);
 			m2.put(0, "GCX09");
 			m2.put(1, "COMEX 金 2009年11月限");
 			m2.put(2, "1088.70");
@@ -265,8 +256,6 @@ public class CsvColumnPositionMapWriterTest {
 			assertTrue(r2);
 
 			assertEquals(filter, writer.getFilter());
-		} finally {
-			writer.close();
 		}
 		assertThat(sw.getBuffer().toString(), is("GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\nGCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"));
 		assertEquals(filter, writer.getFilter());

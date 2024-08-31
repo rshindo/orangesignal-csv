@@ -57,7 +57,7 @@ public class StringArrayListHandler extends AbstractCsvListHandler<String[], Str
 
 	@Override
 	public List<String[]> load(final CsvReader reader, final boolean ignoreScalar) throws IOException {
-		final List<String[]> results = new ArrayList<String[]>();
+		final List<String[]> results = new ArrayList<>();
 		int offset = 0;
 		List<String> values;
 		while ((values = reader.readValues()) != null && (ignoreScalar || limit <= 0 || results.size() < limit)) {

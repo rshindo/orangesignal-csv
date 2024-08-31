@@ -37,7 +37,7 @@ public class CsvEntityLoader<T> extends AbstractCsvLoader<T, CsvEntityTemplate<T
 	 * @throws IllegalArgumentException パラメータが不正な場合
 	 */
 	protected CsvEntityLoader(final CsvConfig cfg, final Class<T> entityClass) {
-		super(cfg, new CsvEntityListHandler<T>(entityClass));
+		super(cfg, new CsvEntityListHandler<>(entityClass));
 	}
 
 	@Override

@@ -55,33 +55,33 @@ public class SimpleCsvValueConverterTest {
 		final SimpleCsvValueConverter c = new SimpleCsvValueConverter();
 
 		// boolean
-		assertThat(((Boolean) c.convert(null, Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("0", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("1", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("false", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("true", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("FALSE", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("TRUE", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("f", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("t", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("F", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("T", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("no", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("yes", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("NO", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("YES", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("n", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("y", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("N", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("Y", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("off", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("on", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("OFF", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("ON", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("x", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("o", Boolean.TYPE)).booleanValue(), is(true));
-		assertThat(((Boolean) c.convert("X", Boolean.TYPE)).booleanValue(), is(false));
-		assertThat(((Boolean) c.convert("O", Boolean.TYPE)).booleanValue(), is(true));
+		assertThat((Boolean) c.convert(null, Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("0", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("1", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("false", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("true", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("FALSE", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("TRUE", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("f", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("t", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("F", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("T", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("no", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("yes", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("NO", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("YES", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("n", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("y", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("N", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("Y", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("off", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("on", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("OFF", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("ON", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("x", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("o", Boolean.TYPE), is(true));
+		assertThat((Boolean) c.convert("X", Boolean.TYPE), is(false));
+		assertThat((Boolean) c.convert("O", Boolean.TYPE), is(true));
 
 		// Boolean
 		assertNull(c.convert(null, Boolean.class));
@@ -113,10 +113,10 @@ public class SimpleCsvValueConverterTest {
 		assertThat((Boolean) c.convert("O", Boolean.class), is(Boolean.TRUE));
 
 		// int / Integer
-		assertThat(((Integer) c.convert(null, Integer.TYPE)).intValue(), is(0));
-		assertThat(((Integer) c.convert("100", Integer.TYPE)).intValue(), is(100));
+		assertThat((Integer) c.convert(null, Integer.TYPE), is(0));
+		assertThat((Integer) c.convert("100", Integer.TYPE), is(100));
 		assertNull(c.convert(null, Integer.class));
-		assertThat(((Integer) c.convert("100", Integer.class)), is(Integer.valueOf(100)));
+		assertThat(((Integer) c.convert("100", Integer.class)), is(100));
 
 		// Number
 		assertNull(c.convert(null, Number.class));

@@ -158,10 +158,10 @@ public class ColumnPositionMappingBeanListHandler<T> extends AbstractBeanListHan
 	@Override
 	public List<T> load(final CsvReader reader, final boolean ignoreScalar) throws IOException {
 		@SuppressWarnings("resource")
-		final CsvColumnPositionMappingBeanReader<T> r = new CsvColumnPositionMappingBeanReader<T>(reader, template);
+		final CsvColumnPositionMappingBeanReader<T> r = new CsvColumnPositionMappingBeanReader<>(reader, template);
 
 		// データ部を処理します。
-		final List<T> results = new ArrayList<T>();
+		final List<T> results = new ArrayList<>();
 		final boolean order = ignoreScalar || orders != null && !orders.isEmpty();
 		int offset = 0;
 
@@ -193,7 +193,7 @@ public class ColumnPositionMappingBeanListHandler<T> extends AbstractBeanListHan
 	@Override
 	public void save(final List<T> list, final CsvWriter writer) throws IOException {
 		@SuppressWarnings("resource")
-		final CsvColumnPositionMappingBeanWriter<T> w = new CsvColumnPositionMappingBeanWriter<T>(writer, template, header);
+		final CsvColumnPositionMappingBeanWriter<T> w = new CsvColumnPositionMappingBeanWriter<>(writer, template, header);
 
 		// データ部を処理します。
 		for (final T bean : list) {

@@ -140,7 +140,7 @@ public class PrefixEntryNameFilterTest {
 		assertTrue(filter6.accept(new ZipEntry("foo/bar/Test.txt")));
 		assertTrue(filter6.accept(new ZipEntry("foo/bar/test/")));
 
-		final List<String> list = new ArrayList<String>();
+		final List<String> list = new ArrayList<>();
 		list.add("foo/bar/test");
 		list.add("foo/test");
 
@@ -259,7 +259,7 @@ public class PrefixEntryNameFilterTest {
 		assertTrue(filter6.accept(new LhaHeader("foo/bar/Test.txt")));
 		assertTrue(filter6.accept(new LhaHeader("foo/bar/test/")));
 
-		final List<String> list = new ArrayList<String>();
+		final List<String> list = new ArrayList<>();
 		list.add("foo/bar/test");
 		list.add("foo/test");
 

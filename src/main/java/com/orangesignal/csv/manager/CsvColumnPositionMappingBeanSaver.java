@@ -47,7 +47,7 @@ public class CsvColumnPositionMappingBeanSaver<T> extends AbstractCsvSaver<T, Co
 	 */
 	protected CsvColumnPositionMappingBeanSaver(final CsvConfig cfg, final List<T> beans, final Class<T> beanClass) {
 		super(cfg, beans);
-		this.handler = new ColumnPositionMappingBeanListHandler<T>(beanClass);
+		this.handler = new ColumnPositionMappingBeanListHandler<>(beanClass);
 	}
 
 	/**

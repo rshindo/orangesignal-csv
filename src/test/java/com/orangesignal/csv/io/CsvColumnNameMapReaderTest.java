@@ -99,8 +99,7 @@ public class CsvColumnNameMapReaderTest {
 
 	@Test
 	public void testGetHeader() throws IOException {
-		final CsvColumnNameMapReader reader = new CsvColumnNameMapReader(new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg));
-		try {
+		try (CsvColumnNameMapReader reader = new CsvColumnNameMapReader(new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg))) {
 			final List<String> h1 = reader.getHeader();
 			assertThat(h1.size(), is(4));
 			assertThat(h1.get(0), is("symbol"));
@@ -137,15 +136,12 @@ public class CsvColumnNameMapReaderTest {
 
 			final Map<String, String> last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testRead1() throws IOException {
-		final CsvColumnNameMapReader reader = new CsvColumnNameMapReader(new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg));
-		try {
+		try (CsvColumnNameMapReader reader = new CsvColumnNameMapReader(new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg))) {
 			final Map<String, String> m1 = reader.read();
 			assertThat(m1.get("symbol"), is("AAAA"));
 			assertThat(m1.get("name"), is("aaa"));
@@ -159,19 +155,16 @@ public class CsvColumnNameMapReaderTest {
 			assertThat(m2.get("volume"), is("0"));
 			final Map<String, String> last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testRead2() throws IOException {
 		cfg.setSkipLines(1);
-		final CsvColumnNameMapReader reader = new CsvColumnNameMapReader(
+		try (CsvColumnNameMapReader reader = new CsvColumnNameMapReader(
 				new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg),
 				Arrays.asList("symbol", "name", "price", "volume")
-			);
-		try {
+		)) {
 			final Map<String, String> m1 = reader.read();
 			assertThat(m1.get("symbol"), is("AAAA"));
 			assertThat(m1.get("name"), is("aaa"));
@@ -185,20 +178,17 @@ public class CsvColumnNameMapReaderTest {
 			assertThat(m2.get("volume"), is("0"));
 			final Map<String, String> last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testReadFilter() throws IOException {
-		final CsvColumnNameMapReader reader = new CsvColumnNameMapReader(new CsvReader(new StringReader(
+		try (CsvColumnNameMapReader reader = new CsvColumnNameMapReader(new CsvReader(new StringReader(
 				"symbol,name,price,volume,date\r\n" +
-				"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
-				"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
-				"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"
-			), cfg));
-		try {
+						"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
+						"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
+						"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"
+		), cfg))) {
 			reader.setFilter(new SimpleCsvNamedValueFilter().ne(0, "gcu09", true));
 
 			final Map<String, String> m1 = reader.read();
@@ -215,8 +205,6 @@ public class CsvColumnNameMapReaderTest {
 			assertThat(m2.get("date"), is("2008/11/06"));
 			final Map<String, String> last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -234,7 +222,7 @@ public class CsvColumnNameMapReaderTest {
 				"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
 				"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n"
 			), cfg));
-		try {
+		try (reader) {
 			reader.setFilter(filter);
 			assertEquals(filter, reader.getFilter());
 
@@ -260,8 +248,6 @@ public class CsvColumnNameMapReaderTest {
 			assertNull(last);
 
 			assertEquals(filter, reader.getFilter());
-		} finally {
-			reader.close();
 		}
 
 		assertEquals(filter, reader.getFilter());

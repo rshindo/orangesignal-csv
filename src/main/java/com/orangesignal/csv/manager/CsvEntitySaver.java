@@ -46,7 +46,7 @@ public class CsvEntitySaver<T> extends AbstractCsvSaver<T, CsvEntityListHandler<
 	 */
 	protected CsvEntitySaver(final CsvConfig cfg, final List<T> entities, final Class<T> entityClass) {
 		super(cfg, entities);
-		this.handler = new CsvEntityListHandler<T>(entityClass);
+		this.handler = new CsvEntityListHandler<>(entityClass);
 	}
 
 	/**

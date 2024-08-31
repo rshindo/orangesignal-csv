@@ -51,8 +51,7 @@ public class CsvResultSetMetaDataTest {
 
 	@Test
 	public void test() throws Exception {
-		final CsvReader reader = new CsvReader(new StringReader("id\r\nNULL"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("id\r\nNULL"), cfg)) {
 			final CsvResultSetMetaData meta = new CsvResultSetMetaData(reader);
 			assertThat(meta.getColumnCount(), is(1));
 			assertThat(meta.isAutoIncrement(1), is(false));
@@ -75,52 +74,38 @@ public class CsvResultSetMetaDataTest {
 			assertThat(meta.isWritable(1), is(false));
 			assertThat(meta.isDefinitelyWritable(1), is(false));
 			assertThat(meta.getColumnClassName(1), is(String.class.getName()));
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test(expected = SQLException.class)
 	public void testGetColumnNameSQLException1() throws Exception {
-		final CsvReader reader = new CsvReader(new StringReader("id\r\nNULL"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("id\r\nNULL"), cfg)) {
 			final CsvResultSetMetaData meta = new CsvResultSetMetaData(reader);
 			meta.getColumnName(0);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test(expected = SQLException.class)
 	public void testGetColumnNameSQLException2() throws Exception {
-		final CsvReader reader = new CsvReader(new StringReader("id\r\nNULL"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("id\r\nNULL"), cfg)) {
 			final CsvResultSetMetaData meta = new CsvResultSetMetaData(reader);
 			meta.getColumnName(meta.getColumnCount() + 1);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test(expected = SQLFeatureNotSupportedException.class)
 	public void testUnwrap() throws Exception {
-		final CsvReader reader = new CsvReader(new StringReader("id\r\nNULL"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("id\r\nNULL"), cfg)) {
 			final CsvResultSetMetaData meta = new CsvResultSetMetaData(reader);
 			meta.unwrap(this.getClass());
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test(expected = SQLFeatureNotSupportedException.class)
 	public void testIsWrapperFor() throws Exception {
-		final CsvReader reader = new CsvReader(new StringReader("id\r\nNULL"), cfg);
-		try {
+		try (CsvReader reader = new CsvReader(new StringReader("id\r\nNULL"), cfg)) {
 			final CsvResultSetMetaData meta = new CsvResultSetMetaData(reader);
 			meta.isWrapperFor(this.getClass());
-		} finally {
-			reader.close();
 		}
 	}
 

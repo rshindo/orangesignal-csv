@@ -48,14 +48,11 @@ public class CsvReaderBenchmarks extends AbstractBenchmark {
 		try {
 			final LhaHeader[] entries = lhaFile.getEntries();
 			for (final LhaHeader entry : entries) {
-				final CsvReader reader = new CsvReader(new InputStreamReader(lhaFile.getInputStream(entry), "Windows-31J"), cfg);
-				try {
+				try (CsvReader reader = new CsvReader(new InputStreamReader(lhaFile.getInputStream(entry), "Windows-31J"), cfg)) {
 					List<String> values;
 					while ((values = reader.readValues()) != null) {
 						continue;
 					}
-				} finally {
-					reader.close();
 				}
 			}
 		} finally {
@@ -69,15 +66,11 @@ public class CsvReaderBenchmarks extends AbstractBenchmark {
 		try {
 			final LhaHeader[] entries = lhaFile.getEntries();
 			for (final LhaHeader entry : entries) {
-				final au.com.bytecode.opencsv.CSVReader reader =
-						new au.com.bytecode.opencsv.CSVReader(new InputStreamReader(lhaFile.getInputStream(entry), "Windows-31J"), ',', '"');
-				try {
+				try (au.com.bytecode.opencsv.CSVReader reader = new au.com.bytecode.opencsv.CSVReader(new InputStreamReader(lhaFile.getInputStream(entry), "Windows-31J"), ',', '"')) {
 					String[] values;
 					while ((values = reader.readNext()) != null) {
 						continue;
 					}
-				} finally {
-					reader.close();
 				}
 			}
 		} finally {
@@ -91,14 +84,11 @@ public class CsvReaderBenchmarks extends AbstractBenchmark {
 		try {
 			final LhaHeader[] entries = lhaFile.getEntries();
 			for (final LhaHeader entry : entries) {
-				final CsvListReader reader = new CsvListReader(new InputStreamReader(lhaFile.getInputStream(entry), "Windows-31J"), CsvPreference.STANDARD_PREFERENCE);
-				try {
+				try (CsvListReader reader = new CsvListReader(new InputStreamReader(lhaFile.getInputStream(entry), "Windows-31J"), CsvPreference.STANDARD_PREFERENCE)) {
 					List<String> values;
 					while ((values = reader.read()) != null) {
 						continue;
 					}
-				} finally {
-					reader.close();
 				}
 			}
 		} finally {

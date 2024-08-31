@@ -217,8 +217,8 @@ public class LhaFile {
 	 * @exception UnsupportedEncodingException encodeがサポートされない場合
 	 */
 	private void constructerHelper(final RandomAccessFile file, final Properties property, final boolean rescueMode) throws IOException {
-		headers = new Vector<LhaHeader>();
-		entryPoint = new Vector<Long>();
+		headers = new Vector<>();
+		entryPoint = new Vector<>();
 
 		file.seek(0);
 		final CachedRandomAccessFileInputStream archive = new CachedRandomAccessFileInputStream(file);
@@ -227,7 +227,7 @@ public class LhaFile {
 		while (null != HeaderData) {
 			final LhaHeader header = LhaHeader.createInstance(HeaderData, property);
 			headers.addElement(header);
-			entryPoint.addElement(new Long(archive.position()));
+			entryPoint.addElement(archive.position());
 
 			if (!rescueMode) {
 				archive.skip(header.getCompressedSize());
@@ -238,14 +238,14 @@ public class LhaFile {
 		}
 		archive.close();
 
-		hash = new Hashtable<String, Integer>();
-		duplicate = new Vector<Integer>();
+		hash = new Hashtable<>();
+		duplicate = new Vector<>();
 		for (int i = 0; i < headers.size(); i++) {
 			final LhaHeader header = headers.elementAt(i);
 			if (!hash.containsKey(header.getPath())) {
-				hash.put(header.getPath(), new Integer(i));
+				hash.put(header.getPath(), i);
 			} else {
-				duplicate.addElement(new Integer(i));
+				duplicate.addElement(i);
 			}
 		}
 
@@ -265,7 +265,7 @@ public class LhaFile {
 	public InputStream getInputStream(final LhaHeader header) {
 		final int index = getIndex(header);
 		if (0 <= index) {
-			final long start = entryPoint.elementAt(index).longValue();
+			final long start = entryPoint.elementAt(index);
 			final long len = header.getCompressedSize();
 			final InputStream in = new RandomAccessFileInputStream(start, len);
 			return CompressMethod.connectDecoder(in, header.getCompressMethod(), property, header.getOriginalSize());
@@ -282,9 +282,9 @@ public class LhaFile {
 	 */
 	public InputStream getInputStream(final String name) {
 		if (hash.containsKey(name)) {
-			final int index = hash.get(name).intValue();
+			final int index = hash.get(name);
 			final LhaHeader header = headers.elementAt(index);
-			final long start = entryPoint.elementAt(index).longValue();
+			final long start = entryPoint.elementAt(index);
 			final long len = header.getCompressedSize();
 			final InputStream in = new RandomAccessFileInputStream(start, len);
 			return CompressMethod.connectDecoder(in, header.getCompressMethod(), property, header.getOriginalSize());
@@ -302,7 +302,7 @@ public class LhaFile {
 	public InputStream getInputStreamWithoutExtract(final LhaHeader header) {
 		final int index = getIndex(header);
 		if (0 <= index) {
-			final long start = entryPoint.elementAt(index).longValue();
+			final long start = entryPoint.elementAt(index);
 			final long len = header.getCompressedSize();
 			return new RandomAccessFileInputStream(start, len);
 		}
@@ -318,9 +318,9 @@ public class LhaFile {
 	 */
 	public InputStream getInputStreamWithoutExtract(final String name) {
 		if (hash.containsKey(name)) {
-			final int index = hash.get(name).intValue();
+			final int index = hash.get(name);
 			final LhaHeader header = headers.elementAt(index);
-			final long start = entryPoint.elementAt(index).longValue();
+			final long start = entryPoint.elementAt(index);
 			final long len = header.getCompressedSize();
 			return new RandomAccessFileInputStream(start, len);
 		}
@@ -391,13 +391,13 @@ public class LhaFile {
 	 * @return headers 内での target の index。 headers 内に target がない場合は -1
 	 */
 	private int getIndex(final LhaHeader target) {
-		int index = hash.get(target.getPath()).intValue();
+		int index = hash.get(target.getPath());
 
 		LhaHeader header = headers.elementAt(index);
 		if (!equal(header, target)) {
 			boolean match = false;
 			for (int i = 0; i < duplicate.size() && !match; i++) {
-				index = duplicate.elementAt(i).intValue();
+				index = duplicate.elementAt(i);
 				header = headers.elementAt(index);
 
 				if (equal(header, target)) {

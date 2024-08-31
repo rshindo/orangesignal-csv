@@ -257,8 +257,8 @@ final class StaticHuffman {
 		final int[] CodeStart = new int[LIMIT_LEN + 2];
 
 		// ハフマン符号長の頻度表作成
-		for (int i = 0; i < LenList.length; i++) {
-			LenFreq[LenList[i]]++;
+		for (int j : LenList) {
+			LenFreq[j]++;
 		}
 
 		if (LenFreq[0] < LenList.length) {

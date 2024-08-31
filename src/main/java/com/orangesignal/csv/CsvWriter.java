@@ -222,7 +222,7 @@ public class CsvWriter implements Closeable, Flushable {
 	 */
 	public void writeTokens(final List<CsvToken> tokens) throws IOException {
 		if (tokens != null) {
-			final List<String> values = new ArrayList<String>(tokens.size());
+			final List<String> values = new ArrayList<>(tokens.size());
 			for (final CsvToken token : tokens) {
 				if (token == null) {
 					values.add(null);

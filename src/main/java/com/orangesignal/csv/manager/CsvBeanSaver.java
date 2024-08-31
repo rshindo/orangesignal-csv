@@ -47,7 +47,7 @@ public class CsvBeanSaver<T> extends AbstractCsvSaver<T, BeanListHandler<T>> imp
 	 */
 	protected CsvBeanSaver(final CsvConfig cfg, final List<T> beans, final Class<T> beanClass) {
 		super(cfg, beans);
-		this.handler = new BeanListHandler<T>(beanClass);
+		this.handler = new BeanListHandler<>(beanClass);
 	}
 
 	@Override

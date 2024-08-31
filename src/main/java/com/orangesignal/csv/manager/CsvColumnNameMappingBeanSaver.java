@@ -47,7 +47,7 @@ public class CsvColumnNameMappingBeanSaver<T> extends AbstractCsvSaver<T, Column
 	 */
 	protected CsvColumnNameMappingBeanSaver(final CsvConfig cfg, final List<T> beans, final Class<T> beanClass) {
 		super(cfg, beans);
-		this.handler = new ColumnNameMappingBeanListHandler<T>(beanClass);
+		this.handler = new ColumnNameMappingBeanListHandler<>(beanClass);
 	}
 
 	/**

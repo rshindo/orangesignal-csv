@@ -88,10 +88,10 @@ public class CsvBeanReaderTest {
 
 	@Test
 	public void testConstructorCsvReaderClass() throws IOException {
-		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<SampleBean>(
+		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<>(
 				new CsvReader(new StringReader("")),
 				SampleBean.class
-			);
+		);
 		reader.close();
 	}
 
@@ -99,10 +99,10 @@ public class CsvBeanReaderTest {
 	public void testConstructorCsvReaderClassIllegalArgumentException1() throws IOException {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectMessage("CsvReader must not be null");
-		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<SampleBean>(
+		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<>(
 				null,
 				SampleBean.class
-			);
+		);
 		reader.close();
 	}
 
@@ -111,19 +111,19 @@ public class CsvBeanReaderTest {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectMessage("Class must not be null");
 		final Class<SampleBean> type = null;
-		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<SampleBean>(
+		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<>(
 				new CsvReader(new StringReader("")),
 				type
-			);
+		);
 		reader.close();
 	}
 
 	@Test
 	public void testConstructorCsvReaderCsvBeanTemplate() throws IOException {
-		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<SampleBean>(
+		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<>(
 				new CsvReader(new StringReader("")),
 				CsvBeanTemplate.newInstance(SampleBean.class)
-			);
+		);
 		reader.close();
 	}
 
@@ -131,10 +131,10 @@ public class CsvBeanReaderTest {
 	public void testConstructorCsvReaderCsvBeanTemplateIllegalArgumentException1() throws IOException {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectMessage("CsvReader must not be null");
-		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<SampleBean>(
+		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<>(
 				null,
 				CsvBeanTemplate.newInstance(SampleBean.class)
-			);
+		);
 		reader.close();
 	}
 
@@ -143,10 +143,10 @@ public class CsvBeanReaderTest {
 		exception.expect(IllegalArgumentException.class);
 		exception.expectMessage("CsvBeanTemplate must not be null");
 		final CsvBeanTemplate<SampleBean> template = null;
-		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<SampleBean>(
+		final CsvBeanReader<SampleBean> reader = new CsvBeanReader<>(
 				new CsvReader(new StringReader("")),
 				template
-			);
+		);
 		reader.close();
 	}
 
@@ -168,11 +168,10 @@ public class CsvBeanReaderTest {
 
 	@Test
 	public void testLoad1() throws IOException {
-		final CsvBeanReader<SampleBean> reader = CsvBeanReader.newInstance(
+		try (CsvBeanReader<SampleBean> reader = CsvBeanReader.newInstance(
 				new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg),
 				SampleBean.class
-			);
-		try {
+		)) {
 			final SampleBean o1 = reader.read();
 			assertThat(o1.symbol, is("AAAA"));
 			assertThat(o1.name, is("aaa"));
@@ -187,18 +186,15 @@ public class CsvBeanReaderTest {
 
 			final SampleBean last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad2() throws IOException {
-		final CsvBeanReader<SampleBean> reader = CsvBeanReader.newInstance(
+		try (CsvBeanReader<SampleBean> reader = CsvBeanReader.newInstance(
 				new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg),
 				CsvBeanTemplate.newInstance(SampleBean.class).includes("name")
-			);
-		try {
+		)) {
 			final SampleBean o1 = reader.read();
 			assertNull(o1.symbol);
 			assertThat(o1.name, is("aaa"));
@@ -211,18 +207,15 @@ public class CsvBeanReaderTest {
 			assertNull(o2.volume);
 			final SampleBean o3 = reader.read();
 			assertNull(o3);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad3() throws IOException {
-		final CsvBeanReader<SampleBean> reader = CsvBeanReader.newInstance(
+		try (CsvBeanReader<SampleBean> reader = CsvBeanReader.newInstance(
 				new CsvReader(new StringReader("symbol,name,price,volume\r\nAAAA,aaa,10000,10\r\nBBBB,bbb,NULL,0"), cfg),
 				CsvBeanTemplate.newInstance(SampleBean.class).excludes("name")
-			);
-		try {
+		)) {
 			final SampleBean o1 = reader.read();
 			assertThat(o1.symbol, is("AAAA"));
 			assertNull(o1.name);
@@ -235,21 +228,18 @@ public class CsvBeanReaderTest {
 			assertThat(o2.volume.longValue(), is(0L));
 			final SampleBean o3 = reader.read();
 			assertNull(o3);
-		} finally {
-			reader.close();
 		}
 	}
 
 	@Test
 	public void testLoad4() throws Exception {
-		final CsvBeanReader<SampleBean> reader = CsvBeanReader.newInstance(
+		try (CsvBeanReader<SampleBean> reader = CsvBeanReader.newInstance(
 				new CsvReader(new StringReader("symbol,name,price,volume,date\r\nAAAA,aaa,10\\,000,10,2008/10/28\r\nBBBB,bbb,NULL,0,NULL"), cfg),
 				CsvBeanTemplate.newInstance(SampleBean.class)
-					.excludes("name")
-					.format("price", new DecimalFormat("#,##0"))
-					.format("date", new SimpleDateFormat("yyyy/MM/dd"))
-			);
-		try {
+						.excludes("name")
+						.format("price", new DecimalFormat("#,##0"))
+						.format("date", new SimpleDateFormat("yyyy/MM/dd"))
+		)) {
 			final SampleBean o1 = reader.read();
 			assertThat(o1.symbol, is("AAAA"));
 			assertNull(o1.name);
@@ -264,8 +254,6 @@ public class CsvBeanReaderTest {
 			assertNull(o2.date);
 			final SampleBean o3 = reader.read();
 			assertNull(o3);
-		} finally {
-			reader.close();
 		}
 	}
 
@@ -273,24 +261,23 @@ public class CsvBeanReaderTest {
 	public void testLoadFilter() throws Exception {
 		final DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
 
-		final CsvBeanReader<SampleBean> reader = CsvBeanReader.newInstance(
+		try (CsvBeanReader<SampleBean> reader = CsvBeanReader.newInstance(
 				new CsvReader(new StringReader(
 						"symbol,name,price,volume,date\r\n" +
-						"GCQ09,COMEX 金 2009年08月限,1058.70,10,2008/08/06\r\n" +
-						"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
-						"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
-						"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n" +
-						"GCZ09,COMEX 金 2009年12月限,1098.70,13,2008/12/06\r\n"
-					), cfg),
-					CsvBeanTemplate.newInstance(SampleBean.class)
+								"GCQ09,COMEX 金 2009年08月限,1058.70,10,2008/08/06\r\n" +
+								"GCU09,COMEX 金 2009年09月限,1068.70,10,2008/09/06\r\n" +
+								"GCV09,COMEX 金 2009年10月限,1078.70,11,2008/10/06\r\n" +
+								"GCX09,COMEX 金 2009年11月限,1088.70,12,2008/11/06\r\n" +
+								"GCZ09,COMEX 金 2009年12月限,1098.70,13,2008/12/06\r\n"
+				), cfg),
+				CsvBeanTemplate.newInstance(SampleBean.class)
 						.format("date", new SimpleDateFormat("yyyy/MM/dd"))
 						.filter(
-						new SimpleCsvNamedValueFilter()
-							.ne("symbol", "gcu09", true)
-							.ne("date", "2008/11/06")
-					)
-			);
-		try {
+								new SimpleCsvNamedValueFilter()
+										.ne("symbol", "gcu09", true)
+										.ne("date", "2008/11/06")
+						)
+		)) {
 			final SampleBean o1 = reader.read();
 			assertThat(o1.symbol, is("GCQ09"));
 			assertThat(o1.name, is("COMEX 金 2009年08月限"));
@@ -311,8 +298,6 @@ public class CsvBeanReaderTest {
 			assertThat(o3.date, is(df.parse("2008/12/06")));
 			final SampleBean last = reader.read();
 			assertNull(last);
-		} finally {
-			reader.close();
 		}
 	}
 
